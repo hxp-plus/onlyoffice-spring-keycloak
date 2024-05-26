@@ -1,17 +1,19 @@
 /**
+ *
  * (c) Copyright Ascensio System SIA 2024
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package com.onlyoffice.integration.controllers;
@@ -20,10 +22,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onlyoffice.integration.documentserver.managers.jwt.JwtManager;
 import com.onlyoffice.integration.documentserver.models.enums.Action;
-import com.onlyoffice.integration.documentserver.storage.FileStoragePathBuilder;
-import com.onlyoffice.integration.entities.User;
 import com.onlyoffice.integration.documentserver.models.enums.Type;
 import com.onlyoffice.integration.documentserver.models.filemodel.FileModel;
+import com.onlyoffice.integration.documentserver.storage.FileStoragePathBuilder;
+import com.onlyoffice.integration.entities.User;
 import com.onlyoffice.integration.services.configurers.FileConfigurer;
 import com.onlyoffice.integration.services.configurers.wrappers.DefaultFileWrapper;
 import lombok.SneakyThrows;
@@ -35,9 +37,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -68,7 +68,13 @@ public class EditorController {
 
     @GetMapping(path = "${url.editor}")
     // process request to open the editor page
-    public String index(@RequestParam("fileName") final String fileName, @RequestParam(value = "action", required = false) final String actionParam, @RequestParam(value = "type", required = false) final String typeParam, @RequestParam(value = "actionLink", required = false) final String actionLink, @RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl, final Model model) throws JsonProcessingException {
+    public String index(@RequestParam("fileName") final String fileName,
+                        @RequestParam(value = "action", required = false) final String actionParam,
+                        @RequestParam(value = "type", required = false) final String typeParam,
+                        @RequestParam(value = "actionLink", required = false) final String actionLink,
+                        @RequestParam(value = "directUrl", required = false, defaultValue = "false")
+                            final Boolean directUrl,
+                        final Model model) throws JsonProcessingException {
         final String lang = "zh";
         Action action = Action.edit;
         Type type = Type.desktop;
@@ -81,7 +87,7 @@ public class EditorController {
             type = Type.valueOf(typeParam);
         }
 
-        List<String> langsAndKeys = Arrays.asList(langs.split("\\|"));
+        String[] langsAndKeys = langs.split("\\|");
         for (String langAndKey : langsAndKeys) {
             String[] couple = langAndKey.split(":");
             if (couple[0].equals(lang)) {
@@ -96,7 +102,9 @@ public class EditorController {
         user.setImage(null);
 
         // get file model with the default file parameters
-        FileModel fileModel = fileConfigurer.getFileModel(DefaultFileWrapper.builder().fileName(fileName).type(type).lang(locale.toLanguageTag()).action(action).user(user).actionData(actionLink).isEnableDirectUrl(directUrl).build());
+        FileModel fileModel = fileConfigurer.getFileModel(DefaultFileWrapper.
+                builder().fileName(fileName).type(type).lang(locale.toLanguageTag()).
+                action(action).user(user).actionData(actionLink).isEnableDirectUrl(directUrl).build());
 
         // add attributes to the specified model
         // add file model with the default parameters to the original model
@@ -134,7 +142,8 @@ public class EditorController {
             dataInsertImage.put("token", jwtManager.createToken(dataInsertImage));
         }
 
-        return objectMapper.writeValueAsString(dataInsertImage).substring(1, objectMapper.writeValueAsString(dataInsertImage).length() - 1);
+        return objectMapper.writeValueAsString(dataInsertImage).
+                substring(1, objectMapper.writeValueAsString(dataInsertImage).length() - 1);
     }
 
     // get a document that will be compared with the current document
