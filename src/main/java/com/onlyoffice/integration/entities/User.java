@@ -36,15 +36,6 @@ import java.util.List;
 public class User extends AbstractEntity {
     private String name;
     private String email;
-    private Boolean favorite;
-    @ManyToOne
-    private Group group;
-    @OneToOne
-    private Permission permissions;
-//    @Column(columnDefinition = "CLOB")
-    @ElementCollection
-    @CollectionTable(name = "user_descriptions")
-    private List<String> descriptions;
     private Boolean avatar;
     private String image;
 }

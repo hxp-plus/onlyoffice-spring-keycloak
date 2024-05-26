@@ -49,9 +49,6 @@ public class DefaultFileConfigurer implements FileConfigurer<DefaultFileWrapper>
     private JwtManager jwtManager;
 
     @Autowired
-    private Mapper<com.onlyoffice.integration.entities.Permission, Permission> mapper;
-
-    @Autowired
     private DefaultDocumentConfigurer defaultDocumentConfigurer;
 
     @Autowired
@@ -67,8 +64,7 @@ public class DefaultFileConfigurer implements FileConfigurer<DefaultFileWrapper>
             fileModel.setDocumentType(documentType);  // set the document type to the file model
             fileModel.setType(wrapper.getType());  // set the platform type to the file model
 
-            Permission userPermissions = mapper.toModel(wrapper.getUser()
-                    .getPermissions());  // convert the permission entity to the model
+            Permission userPermissions = new Permission();  // convert the permission entity to the model
 
             String fileExt = fileUtility.getFileExtension(wrapper.getFileName());
             Boolean canEdit = fileUtility.getEditedExts().contains(fileExt);
@@ -83,7 +79,6 @@ public class DefaultFileConfigurer implements FileConfigurer<DefaultFileWrapper>
                     .builder()
                     .fileName(fileName)
                     .permission(updatePermissions(userPermissions, action, canEdit))
-                    .favorite(wrapper.getUser().getFavorite())
                     .isEnableDirectUrl(wrapper.getIsEnableDirectUrl())
                     .build();
 

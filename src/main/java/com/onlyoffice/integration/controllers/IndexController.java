@@ -98,11 +98,6 @@ public class IndexController {
 
         List<User> users = userService.findAll();  // get a list of all the users
 
-        String tooltip = users.stream()  // get the tooltip with the user descriptions
-                .map(user -> mistUtility.convertUserDescriptions(user.getName(),
-                        user.getDescriptions()))  // convert user descriptions to the specified format
-                .collect(Collectors.joining());
-
         for (java.io.File file:files) {  // run through all the files
             String fileName = file.getName();  // get file name
             docTypes.add(fileUtility
@@ -123,7 +118,6 @@ public class IndexController {
         model.addAttribute("docTypes", docTypes);
         model.addAttribute("filesEditable", filesEditable);
         model.addAttribute("datadocs", docserviceSite + docservicePreloader);
-        model.addAttribute("tooltip", tooltip);
         model.addAttribute("users", users);
         model.addAttribute("languages", languages);
         model.addAttribute("directUrl", directUrl);
