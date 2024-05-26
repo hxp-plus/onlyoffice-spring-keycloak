@@ -1,0 +1,17 @@
+**/obj/
+**/bin/
+*.suo
+*.user
+/build/deploy
+/build/*.log
+**/.vscode/
+**/.vs/
+**/.idea
+.classpath
+.project
+.settings/
+*.iml
+*.iws
+.DS_Store
+/target/
+/documents/
