@@ -36,7 +36,6 @@ import com.onlyoffice.integration.dto.SaveAs;
 import com.onlyoffice.integration.dto.Track;
 import com.onlyoffice.integration.entities.User;
 import com.onlyoffice.integration.documentserver.models.enums.DocumentType;
-import com.onlyoffice.integration.services.UserServices;
 import com.onlyoffice.integration.documentserver.util.file.FileUtility;
 import com.onlyoffice.integration.documentserver.util.service.ServiceConverter;
 import com.onlyoffice.integration.documentserver.managers.document.DocumentManager;
@@ -114,8 +113,6 @@ public class FileController {
     @Autowired
     private FileStoragePathBuilder storagePathBuilder;
     @Autowired
-    private UserServices userService;
-    @Autowired
     private CallbackHandler callbackHandler;
     @Autowired
     private ObjectMapper objectMapper;
@@ -127,14 +124,8 @@ public class FileController {
     private HistoryManager historyManager;
 
     // create user metadata
-    private String createUserMetadata(final String uid, final String fullFileName) {
-        Optional<User> optionalUser = userService.findUserById(Integer.parseInt(uid));  // find a user by their ID
+    private String createUserMetadata(final String fullFileName) {
         String documentType = fileUtility.getDocumentType(fullFileName).toString().toLowerCase();  // get document type
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            storageMutator.createMeta(fullFileName,  // create meta information with the user ID and name specified
-                    String.valueOf(user.getId()), user.getName());
-        }
         return "{ \"filename\": \"" + fullFileName + "\", \"documentType\": \"" + documentType + "\" }";
     }
 
@@ -220,7 +211,7 @@ public class FileController {
             fullFileName = fileUtility.getFileNameWithoutExtension(fileNamePath)
                     + "." + fileExtension;  // get full file name
 
-            return createUserMetadata(uid, fullFileName);  // create user metadata and return it
+            return createUserMetadata(fullFileName);  // create user metadata and return it
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -288,7 +279,7 @@ public class FileController {
             }
 
             // create meta information about the converted file with the user ID and name specified
-            return createUserMetadata(uid, fileName);
+            return createUserMetadata(fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -367,21 +358,15 @@ public class FileController {
     public String create(@RequestParam("fileExt")
                              final String fileExt, // create a sample file of the specified extension
                          @RequestParam(value = "sample", required = false) final Optional<Boolean> isSample,
-                         @CookieValue(value = "uid", required = false) final String uid,
                          final Model model) {
         // specify if the sample data exists or not
         Boolean sampleData = (isSample.isPresent() && !isSample.isEmpty()) && isSample.get();
         if (fileExt != null) {
             try {
-                Optional<User> user = userService.findUserById(Integer.parseInt(uid));  // find a user by their ID
-                if (!user.isPresent()) {
-                    // if the user with the specified ID doesn't exist, an error occurs
-                    throw new RuntimeException("Could not fine any user with id = " + uid);
-                }
                 String fileName = documentManager.createDemo(fileExt,
                         sampleData,
-                        uid,
-                        user.get().getName());  // create a demo document with the sample data
+                        "1",
+                        "Anonymous");  // create a demo document with the sample data
                 if (fileName.isBlank() || fileName == null) {
                     throw new RuntimeException("You must have forgotten to add asset files");
                 }
@@ -461,7 +446,7 @@ public class FileController {
                 return "{\"error\":\"File size is incorrect\"}";
             }
             storageMutator.createFile(Path.of(storagePathBuilder.getFileLocation(fileName)), stream);
-            createUserMetadata(uid, fileName);
+            createUserMetadata(fileName);
 
             return "{\"file\":  \"" + fileName + "\"}";
         } catch (IOException e) {
@@ -619,7 +604,9 @@ public class FileController {
             bumpedKeyFileWriter.write(bumpedKey);
             bumpedKeyFileWriter.close();
 
-            User user = userService.findUserById(uid).get();
+            User user = new User();
+            user.setName("Anonymous");  // set the user name
+            user.setEmail("Anonymous@example.com");  // set the user email
 
             Path bumpedChangesPathFile = Paths.get(bumpedVersionStringDirectory, "changes.json");
             String bumpedChangesStringFile = bumpedChangesPathFile.toString();

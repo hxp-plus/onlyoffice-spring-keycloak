@@ -22,12 +22,8 @@ import com.onlyoffice.integration.documentserver.managers.jwt.JwtManager;
 import com.onlyoffice.integration.documentserver.models.enums.Action;
 import com.onlyoffice.integration.documentserver.storage.FileStoragePathBuilder;
 import com.onlyoffice.integration.entities.User;
-import com.onlyoffice.integration.dto.Mentions;
-import com.onlyoffice.integration.dto.UserInfo;
-import com.onlyoffice.integration.dto.Protect;
 import com.onlyoffice.integration.documentserver.models.enums.Type;
 import com.onlyoffice.integration.documentserver.models.filemodel.FileModel;
-import com.onlyoffice.integration.services.UserServices;
 import com.onlyoffice.integration.services.configurers.FileConfigurer;
 import com.onlyoffice.integration.services.configurers.wrappers.DefaultFileWrapper;
 import lombok.SneakyThrows;
@@ -35,20 +31,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
-
-import static com.onlyoffice.integration.documentserver.util.Constants.ANONYMOUS_USER_ID;
 
 @CrossOrigin("*")
 @Controller
@@ -70,9 +61,6 @@ public class EditorController {
     private JwtManager jwtManager;
 
     @Autowired
-    private UserServices userService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -81,7 +69,6 @@ public class EditorController {
     @GetMapping(path = "${url.editor}")
     // process request to open the editor page
     public String index(@RequestParam("fileName") final String fileName, @RequestParam(value = "action", required = false) final String actionParam, @RequestParam(value = "type", required = false) final String typeParam, @RequestParam(value = "actionLink", required = false) final String actionLink, @RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl, final Model model) throws JsonProcessingException {
-        final String uid = "1";
         final String lang = "zh";
         Action action = Action.edit;
         Type type = Type.desktop;
@@ -103,15 +90,10 @@ public class EditorController {
             }
         }
 
-        Optional<User> optionalUser = userService.findUserById(Integer.parseInt(uid));
-
-        // if the user is not present, return the ONLYOFFICE start page
-        if (!optionalUser.isPresent()) {
-            return "index.html";
-        }
-
-        User user = optionalUser.get();
-        user.setImage(user.getAvatar() ? storagePathBuilder.getServerUrl(true) + "/css/img/uid-" + user.getId() + ".png" : null);
+        User user = new User();
+        user.setName("Anonymous");  // set the user name
+        user.setEmail("Anonymous@example.com");  // set the user email
+        user.setImage(null);
 
         // get file model with the default file parameters
         FileModel fileModel = fileConfigurer.getFileModel(DefaultFileWrapper.builder().fileName(fileName).type(type).lang(locale.toLanguageTag()).action(action).user(user).actionData(actionLink).isEnableDirectUrl(directUrl).build());

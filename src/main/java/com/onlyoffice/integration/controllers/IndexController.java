@@ -23,7 +23,6 @@ import com.onlyoffice.integration.documentserver.storage.FileStoragePathBuilder;
 import com.onlyoffice.integration.documentserver.util.Misc;
 import com.onlyoffice.integration.documentserver.util.file.FileUtility;
 import com.onlyoffice.integration.entities.User;
-import com.onlyoffice.integration.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @Controller
@@ -57,9 +55,6 @@ public class IndexController {
 
     @Autowired
     private Misc mistUtility;
-
-    @Autowired
-    private UserServices userService;
 
     @Value("${files.docservice.url.site}")
     private String docserviceSite;
@@ -96,8 +91,6 @@ public class IndexController {
             languages.put(couple[0], couple[1]);
         });
 
-        List<User> users = userService.findAll();  // get a list of all the users
-
         for (java.io.File file:files) {  // run through all the files
             String fileName = file.getName();  // get file name
             docTypes.add(fileUtility
@@ -118,7 +111,6 @@ public class IndexController {
         model.addAttribute("docTypes", docTypes);
         model.addAttribute("filesEditable", filesEditable);
         model.addAttribute("datadocs", docserviceSite + docservicePreloader);
-        model.addAttribute("users", users);
         model.addAttribute("languages", languages);
         model.addAttribute("directUrl", directUrl);
         model.addAttribute("serverVersion", serverVersion);
