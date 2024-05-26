@@ -1,3 +1,12 @@
+# OnlyOffice官方SpringBoot示例
+
+## 解决的问题
+
+- 编译成jar包无法运行
+- 上传文件限制过小
+
+# 以下为原README
+
 ## Overview
 
 This example will help you integrate ONLYOFFICE Docs into your web application written in Java 

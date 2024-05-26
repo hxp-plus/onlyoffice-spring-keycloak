@@ -29,6 +29,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +45,16 @@ public class DefaultFormatService implements FormatService {
     ) {
         try {
             objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-            File targetFile = resourceFile.getFile();
+            InputStream inputStream = resourceFile.getInputStream();
+            File targetFile = File.createTempFile("onlyoffice-docs-formats", ".json");
+            try (FileOutputStream outputStream = new FileOutputStream(targetFile)) {
+                final int bufferLength = 1024;
+                byte[] buffer = new byte[bufferLength];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
             this.formats = objectMapper.readValue(targetFile, new TypeReference<List<Format>>() { });
         } catch (Exception e) {
             throw new RuntimeException(e);
