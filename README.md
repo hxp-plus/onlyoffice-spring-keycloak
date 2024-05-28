@@ -1,9 +1,25 @@
-# OnlyOffice官方SpringBoot示例
+# Spring后端对接OnlyOffice+Keycloak示例
 
-## 解决的问题
+## 项目简介
 
-- 编译成jar包无法运行
-- 上传文件限制过小
+本项目为Spring后端对接OnlyOffice和Keycloak示例，所涉及的版本信息如下：
+
+- Java 11
+- Keycloak 24
+- SpringBoot 2.5.1
+
+项目由[OnlyOffice官方Spring示例](https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/java-spring)改进而来。
+
+## 测试环境搭建
+
+使用 docker-compose 搭建测试环境：
+
+```
+cd dev-environment
+docker-compose up
+```
+
+其中 `document-server` 镜像的构建需要60GB磁盘空间和4小时编译时间，推荐直接把编译好生成的镜像导入来跳过此步骤。
 
 # 以下为原README
 
