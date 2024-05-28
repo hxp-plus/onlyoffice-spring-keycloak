@@ -19,7 +19,7 @@ cd dev-environment
 docker-compose up
 ```
 
-其中 `document-server` 镜像的构建需要60GB磁盘空间和4小时编译时间，推荐直接把编译好生成的镜像导入来跳过此步骤。
+初次启动Keycloak连接不上为已知问题，重启容器即可。其中 `document-server` 镜像的构建需要60GB磁盘空间和4小时编译时间，推荐直接把编译好生成的镜像导入来跳过此步骤。
 
 # 以下为原README
 
