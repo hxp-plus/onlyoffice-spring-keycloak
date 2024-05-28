@@ -26,6 +26,7 @@ import com.onlyoffice.integration.entities.User;
 import com.onlyoffice.integration.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -89,10 +90,14 @@ public class IndexController {
                 SecurityContextHolder
                         .getContext()
                         .getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            System.out.println("匿名用户 已登录。");
+        } else {
+            OAuth2AuthenticationToken oauthToken =
+                    (OAuth2AuthenticationToken) authentication;
+            System.out.println("用户 " + oauthToken.getName() + " 已登录。");
+        }
 
-        OAuth2AuthenticationToken oauthToken =
-                (OAuth2AuthenticationToken) authentication;
-        System.out.println("用户 " + oauthToken.getName() + " 已登录。");
         java.io.File[] files = storageMutator.getStoredFiles();  // get all the stored files from the storage
         List<String> docTypes = new ArrayList<>();
         List<Boolean> filesEditable = new ArrayList<>();
