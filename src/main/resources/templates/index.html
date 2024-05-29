@@ -69,13 +69,9 @@
                                 <tbody>
                                     <tr>
                                         <td valign="middle">
-                                            <span class="select-user">用户名</span>
-                                            <img id="info" class="info" src="css/img/info.svg"/>
-                                            <select class="select-user" id="user">
-                                                <option th:each="user : ${users}"
-                                                        th:value="${user.id}"
-                                                        th:text="${user.name}"/>
-                                            </select>
+                                            <span class="select-user">用户名：</span>
+                                            <span class="select-user" th:text="${username}"></span>
+                                            <br>
                                         </td>
                                     </tr>
                                     <tr>
@@ -179,12 +175,6 @@
             <table>
                 <tbody>
                 <tr>
-                    <td>
-                        <a href="http://api.onlyoffice.com/editors/howitworks" target="_blank">API Documentation</a>
-                    </td>
-                    <td>
-                        <a href="mailto:sales@onlyoffice.com">Submit your request</a>
-                    </td>
                     <td class="copy">
                         &copy; Ascensio Systems SIA 2024. All rights reserved.
                     </td>
