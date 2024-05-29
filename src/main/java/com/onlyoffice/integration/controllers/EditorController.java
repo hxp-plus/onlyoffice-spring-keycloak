@@ -89,8 +89,8 @@ public class EditorController {
                         @RequestParam(value = "directUrl", required = false,
                                 defaultValue = "false") final Boolean directUrl,
                         @CookieValue(value = "uid") final String uid,
-                        @CookieValue(value = "ulang") final String lang,
                         final Model model) throws JsonProcessingException {
+        final String lang = "zh";
         Action action = Action.edit;
         Type type = Type.desktop;
         Locale locale = new Locale("en");

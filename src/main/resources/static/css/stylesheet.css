@@ -556,14 +556,6 @@ footer table tr td:first-child {
     width: 37%;
 }
 
-.tableHeaderCellEditors{
-    width: 29%;
-}
-
-.tableHeaderCellViewers{
-    width: 11%;
-}
-
 .tableHeaderCellDownload{
     width: 13%;
     text-align: right;
@@ -587,12 +579,16 @@ footer table tr td:first-child {
     -webkit-user-select: none;
 }
 
-.contentCells-shift {
-    padding-right: 44px;
+.contentCells-filename {
+    text-align: left;
 }
 
-.contentCells-icon {
-    width: 4%;
+.contentCells-download {
+    text-align: right;
+}
+
+.contentCells-remove {
+    text-align: right;
 }
 
 .select-user {
@@ -649,7 +645,7 @@ footer table tr td:first-child {
     overflow-x: auto;
     position: absolute;
     right: 0;
-    top: 71px;
+    top: 30px;
     scrollbar-color: #D0D5DA transparent;
     scrollbar-width: thin;
 }
@@ -714,8 +710,8 @@ html {
 .tableRow td:first-child {
     display: flex;
     flex-grow: 1;
-    max-width: 25%;
 }
+
 
 .tableHeaderCellFileName {
     width: 30%;

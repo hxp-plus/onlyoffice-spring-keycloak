@@ -77,9 +77,6 @@ public class IndexController {
     @Value("${url.editor}")
     private String urlEditor;
 
-    @Value("${files.docservice.languages}")
-    private String langs;
-
     @Value("${server.version}")
     private String serverVersion;
 
@@ -103,14 +100,6 @@ public class IndexController {
         List<Boolean> filesEditable = new ArrayList<>();
         List<String> versions = new ArrayList<>();
         List<Boolean> isFillFormDoc = new ArrayList<>();
-        List<String> langsAndKeys = Arrays.asList(langs.split("\\|"));
-
-        Map<String, String> languages = new LinkedHashMap<>();
-
-        langsAndKeys.forEach((str) -> {
-            String[] couple = str.split(":");
-            languages.put(couple[0], couple[1]);
-        });
 
         List<User> users = userService.findAll();  // get a list of all the users
 
@@ -141,7 +130,6 @@ public class IndexController {
         model.addAttribute("datadocs", docserviceSite + docservicePreloader);
         model.addAttribute("tooltip", tooltip);
         model.addAttribute("users", users);
-        model.addAttribute("languages", languages);
         model.addAttribute("directUrl", directUrl);
         model.addAttribute("serverVersion", serverVersion);
 
