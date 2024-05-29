@@ -35,6 +35,9 @@ import com.onlyoffice.integration.services.configurers.wrappers.DefaultFileWrapp
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -136,6 +139,14 @@ public class EditorController {
                         .build()
         );
 
+        String userFullName = "匿名用户";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getPrincipal().getClass());
+        if (authentication.getPrincipal() instanceof DefaultOidcUser) {
+            DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
+            userFullName = userDetails.getFullName();
+        }
+
         // add attributes to the specified model
         // add file model with the default parameters to the original model
         model.addAttribute("model", fileModel);
@@ -159,6 +170,8 @@ public class EditorController {
 
         // get user data for protect and add it to the model
         model.addAttribute("usersForProtect", getUserProtect(uid));
+
+        model.addAttribute("userFullName", userFullName);
 
         return "editor.html";
     }

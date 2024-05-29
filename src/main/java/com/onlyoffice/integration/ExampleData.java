@@ -95,27 +95,32 @@ public class ExampleData {
                 "Can’t submit forms"
         );
 
-        // create user 1 with the specified parameters
-        userService.createUser("John Smith", "smith@example.com", descriptionUserFirst,
+//        // create user 1 with the specified parameters
+//        userService.createUser("John Smith", "smith@example.com", descriptionUserFirst,
+//                "", List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+//                List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+//                List.of(FilterState.NULL.toString()), null, true, true, true);
+//
+//        // create user 2 with the specified parameters
+//        userService.createUser("Mark Pottato", "pottato@example.com", descriptionUserSecond,
+//                "group-2", List.of("", "group-2"), List.of(FilterState.NULL.toString()),
+//                List.of("group-2", ""), List.of("group-2"), List.of("group-2", ""), true, true,
+//                true, true);
+//
+//        // create user 3 with the specified parameters
+//        userService.createUser("Hamish Mitchell", null, descriptionUserThird,
+//                "group-3", List.of("group-2"), List.of("group-2", "group-3"), List.of("group-2"),
+//                new ArrayList<>(), List.of("group-2"), false, true, true, false);
+//
+//        // create user 0 with the specified parameters
+//        userService.createUser("Anonymous", null, descriptionUserZero, "",
+//                List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+//                List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+//                new ArrayList<>(), null, false, false, false);
+
+        userService.createUser("Anonymous", "anonymous@example.com", descriptionUserFirst,
                 "", List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                 List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                 List.of(FilterState.NULL.toString()), null, true, true, true);
-
-        // create user 2 with the specified parameters
-        userService.createUser("Mark Pottato", "pottato@example.com", descriptionUserSecond,
-                "group-2", List.of("", "group-2"), List.of(FilterState.NULL.toString()),
-                List.of("group-2", ""), List.of("group-2"), List.of("group-2", ""), true, true,
-                true, true);
-
-        // create user 3 with the specified parameters
-        userService.createUser("Hamish Mitchell", null, descriptionUserThird,
-                "group-3", List.of("group-2"), List.of("group-2", "group-3"), List.of("group-2"),
-                new ArrayList<>(), List.of("group-2"), false, true, true, false);
-
-        // create user 0 with the specified parameters
-        userService.createUser("Anonymous", null, descriptionUserZero, "",
-                List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
-                List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
-                new ArrayList<>(), null, false, false, false);
     }
 }

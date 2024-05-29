@@ -43,7 +43,7 @@
             <tr>
                 <td class="left-panel section">
                     <div class="help-block">
-                        <span>新建</span>
+                        <span>新建文档</span>
                         <div class="clearFix">
                             <div class="create-panel clearFix">
                                 <ul class="try-editor-list clearFix">
@@ -69,7 +69,7 @@
                                 <tbody>
                                     <tr>
                                         <td valign="middle">
-                                            <span class="select-user">用户名：</span>
+                                            <span class="select-user">当前用户：</span>
                                             <span class="select-user" th:text="${username}"></span>
                                             <br>
                                         </td>
@@ -77,8 +77,13 @@
                                     <tr>
                                         <td valign="middle">
                                             <span class="select-user">使用提示：</span>
+                                            <br>
                                             <span class="select-user">1. 文件重命名方法：
                                                 打开文档，点击“文件”、“重命名”，之后点击“另存为”。</span>
+                                            <br>
+                                            <span class="select-user">2. 目前文档编辑页面不支持与Keycloak对接，
+                                                如有需要需要点击右上角手动录入自己姓名。</span>
+                                            <br>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -175,8 +180,12 @@
             <table>
                 <tbody>
                 <tr>
+                    <td>
+                        版本：v20240529 内测版 by Xiping Hu &lt;hxp@hxp.plus&gt;
+                    </td>
                     <td class="copy">
-                        &copy; Ascensio Systems SIA 2024. All rights reserved.
+                        本项目基于 Ascensio Systems SIA 的开源项目
+                        <a href="https://www.onlyoffice.com/" target="_blank">ONLYOFFICE</a> 开发
                     </td>
                 </tr>
                 </tbody>
