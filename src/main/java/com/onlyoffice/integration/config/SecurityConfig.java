@@ -28,7 +28,15 @@ import java.util.Set;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers("/track", "/download").permitAll().anyRequest().authenticated().and().oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(this.oidcUserService())));
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/track", "/download").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo ->
+                        userInfo.oidcUserService(this.oidcUserService())));
         return http.build();
     }
 
@@ -47,10 +55,12 @@ public class SecurityConfig {
             // 2) Map the authority information to one or more GrantedAuthority's and add it to mappedAuthorities
 
             // 3) Create a copy of oidcUser but use the mappedAuthorities instead
-            ClientRegistration.ProviderDetails providerDetails = userRequest.getClientRegistration().getProviderDetails();
+            ClientRegistration.ProviderDetails providerDetails = userRequest.
+                    getClientRegistration().getProviderDetails();
             String userNameAttributeName = providerDetails.getUserInfoEndpoint().getUserNameAttributeName();
             if (StringUtils.hasText(userNameAttributeName)) {
-                oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo(), userNameAttributeName);
+                oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(),
+                        oidcUser.getUserInfo(), userNameAttributeName);
             } else {
                 oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
             }

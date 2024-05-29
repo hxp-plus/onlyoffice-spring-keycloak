@@ -28,7 +28,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +73,8 @@ public class IndexController {
     private String serverVersion;
 
     @GetMapping("${url.index}")
-    public String index(@RequestParam(value = "directUrl", required = false) final Boolean directUrl, final Model model) {
+    public String index(@RequestParam(value = "directUrl", required = false) final Boolean directUrl,
+                        final Model model) {
         String userFullName = "匿名用户";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getPrincipal().getClass());
@@ -87,9 +92,12 @@ public class IndexController {
 
         for (java.io.File file : files) {  // run through all the files
             String fileName = file.getName();  // get file name
-            docTypes.add(fileUtility.getDocumentType(fileName).toString().toLowerCase());  // add a document type of each file to the list
-            filesEditable.add(fileUtility.getEditedExts().contains(fileUtility.getFileExtension(fileName)));  // specify if a file is editable or not
-            versions.add(" [" + storagePathBuilder.getFileVersion(fileName, true) + "]");  // add a file version to the list
+            // add a document type of each file to the list
+            docTypes.add(fileUtility.getDocumentType(fileName).toString().toLowerCase());
+            // specify if a file is editable or not
+            filesEditable.add(fileUtility.getEditedExts().contains(fileUtility.getFileExtension(fileName)));
+            // add a file version to the list
+            versions.add(" [" + storagePathBuilder.getFileVersion(fileName, true) + "]");
             isFillFormDoc.add(fileUtility.getFillExts().contains(fileUtility.getFileExtension(fileName)));
         }
 
@@ -111,10 +119,12 @@ public class IndexController {
     @ResponseBody
     public HashMap<String, String> configParameters() {  // get configuration parameters
         HashMap<String, String> configuration = new HashMap<>();
-
-        configuration.put("FillExtList", String.join(",", fileUtility.getFillExts()));  // put a list of the extensions that can be filled to config
-        configuration.put("ConverExtList", String.join(",", fileUtility.getConvertExts()));  // put a list of the extensions that can be converted to config
-        configuration.put("EditedExtList", String.join(",", fileUtility.getEditedExts()));  // put a list of the extensions that can be edited to config
+        // put a list of the extensions that can be filled to config
+        configuration.put("FillExtList", String.join(",", fileUtility.getFillExts()));
+        // put a list of the extensions that can be converted to config
+        configuration.put("ConverExtList", String.join(",", fileUtility.getConvertExts()));
+        // put a list of the extensions that can be edited to config
+        configuration.put("EditedExtList", String.join(",", fileUtility.getEditedExts()));
         configuration.put("UrlConverter", urlConverter);
         configuration.put("UrlEditor", urlEditor);
 
