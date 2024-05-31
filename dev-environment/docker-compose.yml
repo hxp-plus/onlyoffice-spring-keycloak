@@ -31,7 +31,7 @@ services:
     depends_on:
       - kc_mysql
   document-server:
-    image: hxp.plus/onlyoffice/document-server:v20240526
+    image: hxp.plus/onlyoffice/document-server:v20240531
     build: ./document-server-unlimited
     ports:
       - 8081:80
