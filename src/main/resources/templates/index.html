@@ -48,7 +48,7 @@
                             <div class="create-panel clearFix">
                                 <ul class="try-editor-list clearFix">
                                     <li>
-                                        <a class="try-editor word" data-type="docx">Word</a>
+                                        <a class="try-editor word" style="pointer-events: none;" data-type="docx">Word（暂缓开放）</a>
                                     </li>
                                     <li>
                                         <a class="try-editor cell" data-type="xlsx">Excel</a>
@@ -78,8 +78,8 @@
                                         <td valign="middle">
                                             <span class="select-user">使用提示：</span>
                                             <br>
-                                            <span class="select-user">1. 文件重命名方法：
-                                                打开文档，点击“文件”、“重命名”，之后点击“另存为”。</span>
+                                            <span class="select-user">1. 文件重命名功能暂时没有实现，
+                                                如果需要请将文档下载本地重命名后上传。</span>
                                             <br>
                                             <span class="select-user">2. 目前文档编辑页面不支持与Keycloak对接，
                                                 如有需要需要点击右上角手动录入自己姓名。</span>
@@ -96,6 +96,7 @@
                         <th:block th:if="${not #lists.isEmpty(files)}">
                             <div class="stored-list">
                                 <span class="header-list">已有的文档</span>
+                                <span class="header-list" style="color: red"> （此版本为内部测试版本，上线后数据不迁移，请妥善保留数据）</span>
                                 <div class="scroll-table-body">
                                     <table cellspacing="0" cellpadding="0" width="100%">
                                         <tbody>

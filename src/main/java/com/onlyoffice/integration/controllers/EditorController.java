@@ -122,8 +122,7 @@ public class EditorController {
         }
 
         User user = optionalUser.get();
-        user.setImage(user.getAvatar() ? storagePathBuilder.getServerUrl(true) + "/css/img/uid-"
-                + user.getId() + ".png" : null);
+        user.setImage(null);
 
         // get file model with the default file parameters
         FileModel fileModel = fileConfigurer.getFileModel(
