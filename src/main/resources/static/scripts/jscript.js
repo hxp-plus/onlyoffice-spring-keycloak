@@ -49,13 +49,13 @@ if (typeof jQuery !== "undefined") {
 
                 jq.blockUI({
                     theme: true,
-                    title: "File upload" + "<div class=\"dialog-close\"></div>",
+                    title: "文件上传" + "<div class=\"dialog-close\"></div>",
                     message: jq("#mainProgress"),
                     overlayCSS: { "background-color": "#aaa" },
                     themedCSS: { width: "539px", top: "20%", left: "50%", marginLeft: "-269px" }
                 });
                 jq("#beginEdit, #beginView, #beginEmbedded").addClass("disable");
-
+                console.log("正在上传文件");
                 data.submit();
             },
             always: function (e, data) {
@@ -236,6 +236,8 @@ if (typeof jQuery !== "undefined") {
     });
 
     jq(document).on("click", "#beginEdit:not(.disable)", function () {
+        console.log("正在打开编辑器窗口");
+        directUrl = getUrlVars()["directUrl"] == "true";
         var fileId = encodeURIComponent(jq("#hiddenFileName").val());
         var url = UrlEditor + "?action=edit&fileName=" + fileId + "&directUrl=" + directUrl;
         window.open(url, "_blank");
@@ -319,8 +321,6 @@ if (typeof jQuery !== "undefined") {
         }
         return vars;
     };
-
-    jq("#portal-info")[0].innerHTML += jq("#portal-info")[0].attributes.tooltip.value;
 
     var fileList = jq("tr.tableRow");
 

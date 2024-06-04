@@ -129,44 +129,42 @@
 <div id="mainProgress">
     <div id="uploadSteps">
         <span class="uploadFileName" id="uploadFileName"></span>
-        <div class="describeUpload">After these steps are completed, you can work with your document.</div>
-        <span class="step" id="step1">1. Loading the file.</span>
-        <span class="step-descr">The loading speed depends on file size and additional elements it contains.</span>
+        <div class="describeUpload">请等待以下几步完成后方可编辑文档：</div>
+        <span class="step" id="step1">1. 加载文件</span>
+        <span class="step-descr">加载速度取决于网络带宽与文件大小。</span>
         <br/>
-        <span class="step" id="step2">2. Conversion.</span>
-        <span class="step-descr">The file is converted to OOXML so that you can edit it.</span>
+        <span class="step" id="step2">2. 转换文档</span>
+        <span class="step-descr">文档必须转换为OnlyOffice格式方可编辑。</span>
         <br/>
         <div id="blockPassword">
-            <span class="descrFilePass">The file is password protected.</span>
+            <span class="descrFilePass">文档被密码保护</span>
             <br/>
             <div>
                 <input id="filePass" type="password"/>
-                <div class="button orange" id="enterPass">Enter</div>
-                <div class="button gray" id="skipPass">Skip</div>
+                <div class="button orange" id="enterPass">确定</div>
+                <div class="button gray" id="skipPass">跳过</div>
             </div>
             <span class="errorPass"></span>
             <br/>
         </div>
-        <span class="step" id="step3">3. Loading editor scripts.</span>
-        <span class="step-descr">They are loaded only once, they will be cached on your computer.</span>
+        <span class="step" id="step3">3. 加载网页编辑器JavaScript脚本</span>
+        <span class="step-descr">JavaScript脚本仅会被加载一次并缓存于浏览器。</span>
         <input id="hiddenFileName" name="hiddenFileName" type="hidden"/>
         <br/>
-        <span class="progress-descr">Note the speed of all operations depends on your connection quality and server location.</span>
+        <span class="progress-descr">注意：以上所有步骤读取决于您的网络带宽与到服务器的延迟。</span>
         <br/>
         <div class="error-message">
-            <b>Upload error: </b><span></span>
+            <b>上传错误：</b><span></span>
             <br/>
-            Please select another file and try again.
+            请选择其它文件或再次尝试。
         </div>
     </div>
     <iframe allowtransparency frameborder="0" height="345px" id="embeddedView" scrolling="no" src=""
             width="432px"></iframe>
     <br/>
     <div class="buttonsMobile">
-        <div class="button orange disable" id="beginEdit">Edit</div>
-        <div class="button gray disable" id="beginView">View</div>
-        <div class="button gray disable" id="beginEmbedded">Embedded view</div>
-        <div class="button gray" id="cancelEdit">Cancel</div>
+        <div class="button orange disable" id="beginEdit">开始编辑</div>
+        <div class="button gray" id="cancelEdit">关闭</div>
     </div>
 </div>
 
@@ -199,10 +197,5 @@
 <script src="scripts/jquery.dropdownToggle.js" type="text/javascript"></script>
 <script src="scripts/jscript.js" type="text/javascript"></script>
 <script src="scripts/converter.js" type="text/javascript"></script>
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById("language").value = "zh";
-    });
-</script>
 </body>
 </html>
