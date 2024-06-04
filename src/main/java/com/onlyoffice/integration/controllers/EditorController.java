@@ -91,8 +91,8 @@ public class EditorController {
                         @RequestParam(value = "actionLink", required = false) final String actionLink,
                         @RequestParam(value = "directUrl", required = false,
                                 defaultValue = "false") final Boolean directUrl,
-                        @CookieValue(value = "uid") final String uid,
                         final Model model) throws JsonProcessingException {
+        final String uid = "1";
         final String lang = "zh";
         Action action = Action.edit;
         Type type = Type.desktop;
