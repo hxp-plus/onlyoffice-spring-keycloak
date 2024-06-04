@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.onlyoffice</groupId>
-	<artifactId>integration</artifactId>
-	<version>1.0</version>
+	<artifactId>onlyoffice-server</artifactId>
+	<version>v20240604</version>
 	<name>Java Spring Integration Example</name>
 	<description>ONLYOFFICE Java Spring Integration</description>
 	<properties>
@@ -123,6 +123,7 @@
 					<excludes>
 						<exclude>**/application.properties</exclude>
 					</excludes>
+					<finalName>${project.artifactId}-${project.version}</finalName>
 				</configuration>
 			</plugin>
 		</plugins>

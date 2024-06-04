@@ -73,8 +73,7 @@ public class IndexController {
     private String serverVersion;
 
     @GetMapping("${url.index}")
-    public String index(@RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl,
-                        final Model model) {
+    public String index(@RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl, final Model model) {
         String userFullName = "匿名用户";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getPrincipal().getClass());
