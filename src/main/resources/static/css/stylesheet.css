@@ -531,41 +531,6 @@ footer table tr td:first-child {
     background-color: #ECECEC;
 }
 
-.tableHeader {
-    padding-top: 10px;
-}
-
-.tableHeader tr{
-    background: transparent;
-    cursor: default;
-    height: 40px;
-    -khtml-user-select: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-}
-
-.tableHeaderCell {
-    border-bottom: 1px solid #EFEFEF;
-    padding: 2px 4px;
-    text-align: center;
-}
-
-.tableHeaderCellFileName {
-    text-align: left;
-    width: 37%;
-}
-
-.tableHeaderCellDownload{
-    width: 13%;
-    text-align: right;
-    padding-right: 20px;
-}
-
-.tableHeaderCellRemove{
-    text-align: left;
-}
-
 .contentCells {
 	display: block;
     border-bottom: 1px solid #e5e5e5;
