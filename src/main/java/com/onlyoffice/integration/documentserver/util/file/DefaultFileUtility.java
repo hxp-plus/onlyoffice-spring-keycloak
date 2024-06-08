@@ -46,7 +46,7 @@ public class DefaultFileUtility implements FileUtility {
 
     // get the document type
     public DocumentType getDocumentType(final String fileName) {
-        String ext = getFileExtension(fileName).toLowerCase();  // get file extension from its name
+        String ext = getFileExtension(fileName).toLowerCase(); // get file extension from its name
 
         List<Format> formats = formatService.getFormats();
         for (Format format : formats) {
@@ -143,11 +143,11 @@ public class DefaultFileUtility implements FileUtility {
         if (fileName.length() > maxName) {
             fileName = fileName.substring(0, maxName) + "[...]";
         }
-        String fileExtension = getFileExtension(fullFileName);  // get file extension
+        String fileExtension = getFileExtension(fullFileName); // get file extension
         // get the path to the files with the specified name
         Path path = Paths.get(directory + fileName + "." + fileExtension);
 
-        for (int i = 1; Files.exists(path); i++) {  // run through all the files with the specified name
+        for (int i = 1; Files.exists(path); i++) { // run through all the files with the specified name
             // get a name of each file without extension and add an index to it
             fileName = fileName + "(" + i + ")";
 

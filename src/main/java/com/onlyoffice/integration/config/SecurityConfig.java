@@ -35,8 +35,8 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo ->
-                        userInfo.oidcUserService(this.oidcUserService())));
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(this.oidcUserService())));
         return http.build();
     }
 
@@ -51,12 +51,14 @@ public class SecurityConfig {
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
             // TODO
-            // 1) Fetch the authority information from the protected resource using accessToken
-            // 2) Map the authority information to one or more GrantedAuthority's and add it to mappedAuthorities
+            // 1) Fetch the authority information from the protected resource using
+            // accessToken
+            // 2) Map the authority information to one or more GrantedAuthority's and add it
+            // to mappedAuthorities
 
             // 3) Create a copy of oidcUser but use the mappedAuthorities instead
-            ClientRegistration.ProviderDetails providerDetails = userRequest.
-                    getClientRegistration().getProviderDetails();
+            ClientRegistration.ProviderDetails providerDetails = userRequest.getClientRegistration()
+                    .getProviderDetails();
             String userNameAttributeName = providerDetails.getUserInfoEndpoint().getUserNameAttributeName();
             if (StringUtils.hasText(userNameAttributeName)) {
                 oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(),

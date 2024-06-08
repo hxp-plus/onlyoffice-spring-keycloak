@@ -23,10 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 // specify the callback handler functions
 public interface Callback {
-    int handle(Track body, String fileName);  // handle the callback
-    int getStatus();  // get document status
+    int handle(Track body, String fileName); // handle the callback
+
+    int getStatus(); // get document status
+
     @Autowired
-    default void selfRegistration(CallbackHandler callbackHandler) {  // register a callback handler
+    default void selfRegistration(CallbackHandler callbackHandler) { // register a callback handler
         callbackHandler.register(getStatus(), this);
     }
 }

@@ -39,9 +39,9 @@ public class User extends AbstractModel {
 
     // the user configuration parameters
     public void configure(final int idParam, final String nameParam, final String groupParam) {
-        this.id = "uid-" + idParam;  // the user id
-        this.name = nameParam;  // the user name
-        this.group = groupParam;  // the group the user belongs to
+        this.id = "uid-" + idParam; // the user id
+        this.name = nameParam; // the user name
+        this.group = groupParam; // the group the user belongs to
         this.image = storagePathBuilder.getServerUrl(true) + "/css/img/uid-" + this.id + ".png";
     }
 }

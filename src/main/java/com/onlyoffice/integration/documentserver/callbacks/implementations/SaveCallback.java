@@ -29,12 +29,13 @@ import org.springframework.stereotype.Component;
 public class SaveCallback implements Callback {
     @Autowired
     private CallbackManager callbackManager;
+
     @Override
     public int handle(final Track body,
-                      final String fileName) {  // handle the callback when the saving request is performed
+            final String fileName) { // handle the callback when the saving request is performed
         int result = 0;
         try {
-            callbackManager.processSave(body, fileName);  // file saving process
+            callbackManager.processSave(body, fileName); // file saving process
         } catch (Exception ex) {
             ex.printStackTrace();
             result = 1;
@@ -44,7 +45,7 @@ public class SaveCallback implements Callback {
     }
 
     @Override
-    public int getStatus() {  // get document status
-        return Status.SAVE.getCode();  // return status 2 - document is ready for saving
+    public int getStatus() { // get document status
+        return Status.SAVE.getCode(); // return status 2 - document is ready for saving
     }
 }

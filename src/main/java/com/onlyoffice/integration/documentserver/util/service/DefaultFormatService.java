@@ -38,11 +38,11 @@ import java.util.stream.Stream;
 @Service
 public class DefaultFormatService implements FormatService {
     private List<Format> formats;
+
     @Autowired
     public DefaultFormatService(
             @Value("classpath:assets/document-formats/onlyoffice-docs-formats.json") final Resource resourceFile,
-            final ObjectMapper objectMapper
-    ) {
+            final ObjectMapper objectMapper) {
         try {
             objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
             InputStream inputStream = resourceFile.getInputStream();
@@ -55,7 +55,8 @@ public class DefaultFormatService implements FormatService {
                     outputStream.write(buffer, 0, bytesRead);
                 }
             }
-            this.formats = objectMapper.readValue(targetFile, new TypeReference<List<Format>>() { });
+            this.formats = objectMapper.readValue(targetFile, new TypeReference<List<Format>>() {
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -66,16 +67,14 @@ public class DefaultFormatService implements FormatService {
     }
 
     public List<Format> getFormatsByAction(final String action) {
-        return this
-                .formats
+        return this.formats
                 .stream()
                 .filter(format -> format.getActions().contains(action))
                 .collect(Collectors.toList());
     }
 
     public List<String> allExtensions() {
-        return this
-                .formats
+        return this.formats
                 .stream()
                 .map(format -> format.getName())
                 .collect(Collectors.toList());

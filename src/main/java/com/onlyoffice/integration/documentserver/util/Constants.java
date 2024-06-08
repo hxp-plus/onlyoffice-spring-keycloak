@@ -28,6 +28,6 @@ public final class Constants {
     public static final Integer ANONYMOUS_USER_ID = 4;
     public static final Integer KILOBYTE_SIZE = 1024;
 
-    private Constants() { }
+    private Constants() {
+    }
 }
-

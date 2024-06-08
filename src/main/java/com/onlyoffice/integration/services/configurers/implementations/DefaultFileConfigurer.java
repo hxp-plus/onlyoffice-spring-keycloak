@@ -39,100 +39,102 @@ import java.util.Map;
 @Service
 @Primary
 public class DefaultFileConfigurer implements FileConfigurer<DefaultFileWrapper> {
-    @Autowired
-    private ObjectFactory<FileModel> fileModelObjectFactory;
+        @Autowired
+        private ObjectFactory<FileModel> fileModelObjectFactory;
 
-    @Autowired
-    private FileUtility fileUtility;
+        @Autowired
+        private FileUtility fileUtility;
 
-    @Autowired
-    private JwtManager jwtManager;
+        @Autowired
+        private JwtManager jwtManager;
 
-    @Autowired
-    private Mapper<com.onlyoffice.integration.entities.Permission, Permission> mapper;
+        @Autowired
+        private Mapper<com.onlyoffice.integration.entities.Permission, Permission> mapper;
 
-    @Autowired
-    private DefaultDocumentConfigurer defaultDocumentConfigurer;
+        @Autowired
+        private DefaultDocumentConfigurer defaultDocumentConfigurer;
 
-    @Autowired
-    private DefaultEditorConfigConfigurer defaultEditorConfigConfigurer;
+        @Autowired
+        private DefaultEditorConfigConfigurer defaultEditorConfigConfigurer;
 
-    public void configure(final FileModel fileModel, final DefaultFileWrapper wrapper) {  // define the file configurer
-        if (fileModel != null) {  // check if the file model is specified
-            String fileName = wrapper.getFileName();  // get the fileName parameter from the file wrapper
-            Action action = wrapper.getAction();  // get the action parameter from the file wrapper
+        public void configure(final FileModel fileModel, final DefaultFileWrapper wrapper) { // define the file
+                                                                                             // configurer
+                if (fileModel != null) { // check if the file model is specified
+                        String fileName = wrapper.getFileName(); // get the fileName parameter from the file wrapper
+                        Action action = wrapper.getAction(); // get the action parameter from the file wrapper
 
-            DocumentType documentType = fileUtility
-                    .getDocumentType(fileName);  // get the document type of the specified file
-            fileModel.setDocumentType(documentType);  // set the document type to the file model
-            fileModel.setType(wrapper.getType());  // set the platform type to the file model
+                        DocumentType documentType = fileUtility
+                                        .getDocumentType(fileName); // get the document type of the specified file
+                        fileModel.setDocumentType(documentType); // set the document type to the file model
+                        fileModel.setType(wrapper.getType()); // set the platform type to the file model
 
-            Permission userPermissions = mapper.toModel(wrapper.getUser()
-                    .getPermissions());  // convert the permission entity to the model
+                        Permission userPermissions = mapper.toModel(wrapper.getUser()
+                                        .getPermissions()); // convert the permission entity to the model
 
-            String fileExt = fileUtility.getFileExtension(wrapper.getFileName());
-            Boolean canEdit = fileUtility.getEditedExts().contains(fileExt);
-            if ((!canEdit && action.equals(Action.edit) || action.equals(Action.fillForms)) && fileUtility
-                    .getFillExts().contains(fileExt)) {
-                canEdit = true;
-                wrapper.setAction(Action.fillForms);
-            }
-            wrapper.setCanEdit(canEdit);
+                        String fileExt = fileUtility.getFileExtension(wrapper.getFileName());
+                        Boolean canEdit = fileUtility.getEditedExts().contains(fileExt);
+                        if ((!canEdit && action.equals(Action.edit) || action.equals(Action.fillForms)) && fileUtility
+                                        .getFillExts().contains(fileExt)) {
+                                canEdit = true;
+                                wrapper.setAction(Action.fillForms);
+                        }
+                        wrapper.setCanEdit(canEdit);
 
-            DefaultDocumentWrapper documentWrapper = DefaultDocumentWrapper  // define the document wrapper
-                    .builder()
-                    .fileName(fileName)
-                    .permission(updatePermissions(userPermissions, action, canEdit))
-                    .favorite(wrapper.getUser().getFavorite())
-                    .isEnableDirectUrl(wrapper.getIsEnableDirectUrl())
-                    .build();
+                        DefaultDocumentWrapper documentWrapper = DefaultDocumentWrapper // define the document wrapper
+                                        .builder()
+                                        .fileName(fileName)
+                                        .permission(updatePermissions(userPermissions, action, canEdit))
+                                        .favorite(wrapper.getUser().getFavorite())
+                                        .isEnableDirectUrl(wrapper.getIsEnableDirectUrl())
+                                        .build();
 
-            defaultDocumentConfigurer
-                    .configure(fileModel.getDocument(), documentWrapper);  // define the document configurer
-            defaultEditorConfigConfigurer
-                    .configure(fileModel.getEditorConfig(), wrapper);  // define the editorConfig configurer
+                        defaultDocumentConfigurer
+                                        .configure(fileModel.getDocument(), documentWrapper); // define the document
+                                                                                              // configurer
+                        defaultEditorConfigConfigurer
+                                        .configure(fileModel.getEditorConfig(), wrapper); // define the editorConfig
+                                                                                          // configurer
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("type", fileModel.getType());
-            map.put("documentType", documentType);
-            map.put("document", fileModel.getDocument());
-            map.put("editorConfig", fileModel.getEditorConfig());
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("type", fileModel.getType());
+                        map.put("documentType", documentType);
+                        map.put("document", fileModel.getDocument());
+                        map.put("editorConfig", fileModel.getEditorConfig());
 
-            fileModel.setToken(jwtManager.createToken(map));  // create a token and set it to the file model
+                        fileModel.setToken(jwtManager.createToken(map)); // create a token and set it to the file model
+                }
         }
-    }
 
-    @Override
-    public FileModel getFileModel(final DefaultFileWrapper wrapper) {  // get file model
-        FileModel fileModel = fileModelObjectFactory.getObject();
-        configure(fileModel, wrapper);  // and configure it
-        return fileModel;
-    }
+        @Override
+        public FileModel getFileModel(final DefaultFileWrapper wrapper) { // get file model
+                FileModel fileModel = fileModelObjectFactory.getObject();
+                configure(fileModel, wrapper); // and configure it
+                return fileModel;
+        }
 
-    private Permission updatePermissions(final Permission userPermissions, final Action action, final Boolean canEdit) {
-        userPermissions.setComment(
-                !action.equals(Action.view)
-                        && !action.equals(Action.fillForms)
-                        && !action.equals(Action.embedded)
-                        && !action.equals(Action.blockcontent)
-        );
+        private Permission updatePermissions(final Permission userPermissions, final Action action,
+                        final Boolean canEdit) {
+                userPermissions.setComment(
+                                !action.equals(Action.view)
+                                                && !action.equals(Action.fillForms)
+                                                && !action.equals(Action.embedded)
+                                                && !action.equals(Action.blockcontent));
 
-        userPermissions.setFillForms(
-                !action.equals(Action.view)
-                        && !action.equals(Action.comment)
-                        && !action.equals(Action.embedded)
-                        && !action.equals(Action.blockcontent)
-        );
+                userPermissions.setFillForms(
+                                !action.equals(Action.view)
+                                                && !action.equals(Action.comment)
+                                                && !action.equals(Action.embedded)
+                                                && !action.equals(Action.blockcontent));
 
-        userPermissions.setReview(canEdit
-                && (action.equals(Action.review) || action.equals(Action.edit)));
+                userPermissions.setReview(canEdit
+                                && (action.equals(Action.review) || action.equals(Action.edit)));
 
-        userPermissions.setEdit(canEdit
-                && (action.equals(Action.view)
-                || action.equals(Action.edit)
-                || action.equals(Action.filter)
-                || action.equals(Action.blockcontent)));
+                userPermissions.setEdit(canEdit
+                                && (action.equals(Action.view)
+                                                || action.equals(Action.edit)
+                                                || action.equals(Action.filter)
+                                                || action.equals(Action.blockcontent)));
 
-        return userPermissions;
-    }
+                return userPermissions;
+        }
 }

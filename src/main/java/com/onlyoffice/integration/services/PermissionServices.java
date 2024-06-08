@@ -34,31 +34,33 @@ public class PermissionServices {
 
     // create permissions with the specified parameters
     public Permission createPermission(final List<Group> reviewGroups,
-                                       final List<Group> commentViewGroups,
-                                       final List<Group> commentEditGroups,
-                                       final List<Group> commentRemoveGroups,
-                                       final List<Group> userInfoGroups,
-                                       final Boolean chat,
-                                       final Boolean protect) {
+            final List<Group> commentViewGroups,
+            final List<Group> commentEditGroups,
+            final List<Group> commentRemoveGroups,
+            final List<Group> userInfoGroups,
+            final Boolean chat,
+            final Boolean protect) {
 
         Permission permission = new Permission();
-        permission.setReviewGroups(reviewGroups);  // define the groups whose changes the user can accept/reject
-        permission.setCommentsViewGroups(commentViewGroups);  // defines the groups whose comments the user can view
-        permission.setCommentsEditGroups(commentEditGroups);  // defines the groups whose comments the user can edit
-        permission.setCommentsRemoveGroups(commentRemoveGroups);  /* defines the groups
-         whose comments the user can remove */
+        permission.setReviewGroups(reviewGroups); // define the groups whose changes the user can accept/reject
+        permission.setCommentsViewGroups(commentViewGroups); // defines the groups whose comments the user can view
+        permission.setCommentsEditGroups(commentEditGroups); // defines the groups whose comments the user can edit
+        permission.setCommentsRemoveGroups(commentRemoveGroups); /*
+                                                                  * defines the groups
+                                                                  * whose comments the user can remove
+                                                                  */
         permission.setUserInfoGroups(userInfoGroups);
         permission.setChat(chat);
         permission.setProtect(protect);
 
-        permissionRepository.save(permission);  // save new permissions
+        permissionRepository.save(permission); // save new permissions
 
         return permission;
     }
 
     // update permissions
     public Permission updatePermission(final Permission newPermission) {
-        permissionRepository.save(newPermission);  // save new permissions
+        permissionRepository.save(newPermission); // save new permissions
 
         return newPermission;
     }

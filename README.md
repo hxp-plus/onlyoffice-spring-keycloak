@@ -1,15 +1,15 @@
-# Spring后端对接OnlyOffice+Keycloak示例
+# Spring 后端对接 OnlyOffice+Keycloak 示例
 
 ## 项目简介
 
-本项目为Spring后端对接OnlyOffice和Keycloak示例，所涉及的版本信息如下：
+本项目为 Spring 后端对接 OnlyOffice 和 Keycloak 示例，所涉及的版本信息如下：
 
 - Java 11
 - Keycloak 24.0.2
 - SpringBoot 2.5.1
 - MySQL 8.0.37
 
-项目由 [OnlyOffice官方Spring示例](https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/java-spring)
+项目由 [OnlyOffice 官方 Spring 示例](https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/java-spring)
 改进而来，改进如下：
 
 1. 重新编译 document-server 开源代码，解除了 OnlyOffice 只能 20 个文档同时被编辑的限制
@@ -28,7 +28,7 @@ docker-compose up
 
 注意需要把环境 `docker-compose.yml` 中所有的 `ubuntu.hxp.lan` 替换成 docker 机器的 IP
 地址或者域名，修改 `application.properties` 配置文件里的 `ubuntu.hxp.lan` 。初次启动 Keycloak
-连接不上为已知问题，重启容器即可。其中 `document-server` 镜像的构建需要60GB磁盘空间和4小时编译时间，推荐直接把编译好生成的镜像导入来跳过此步骤。
+连接不上为已知问题，重启容器即可。其中 `document-server` 镜像的构建需要 60GB 磁盘空间和 4 小时编译时间，推荐直接把编译好生成的镜像导入来跳过此步骤。
 在 Keycloak 里创建相应的 Realm 和 client ，需要操作的步骤有：
 
 1. 新建名称为 test 的 Realm
@@ -40,7 +40,7 @@ docker-compose up
 
 之后启动 Spring 后端进行测试。
 
-# 以下为原README
+# 以下为原 README
 
 ## Overview
 
@@ -68,7 +68,7 @@ Server [for Windows](https://helpcenter.onlyoffice.com/installation/docs-develop
 Download the [Java-Spring example](https://api.onlyoffice.com/editors/demopreview) from our site.
 
 To connect the editors to your website, specify the path to the editors installation, server port and the path to the
-storage folder in the *src/main/resources/application.properties* file:
+storage folder in the _src/main/resources/application.properties_ file:
 
 ```
  files.storage=
@@ -78,19 +78,19 @@ storage folder in the *src/main/resources/application.properties* file:
 
 where the **documentserver** is the name of the server with the ONLYOFFICE Docs installed, **port** is any available
 port and **files.storage** is the path where files will be created and stored (in the project folder by default). You
-can set an absolute path. For example, *D:\\\\folder*. Please note that on Windows OS the double backslash must be used
+can set an absolute path. For example, _D:\\\\folder_. Please note that on Windows OS the double backslash must be used
 as a separator.
 
 If you want to experiment with the editor configuration, modify
-the [parameters](https://api.onlyoffice.com/editors/advanced) it the *\src\main\resources\editor.html* file.
+the [parameters](https://api.onlyoffice.com/editors/advanced) it the _\src\main\resources\editor.html_ file.
 
 ### Step 3. Install the prerequisites
 
-To run the Java example code, install the Java version 11 appropriate for your OS and framework  **Apache Maven**:
+To run the Java example code, install the Java version 11 appropriate for your OS and framework **Apache Maven**:
 
-* Java (download
+- Java (download
   from [the Oracle official website](https://www.oracle.com/ru/java/technologies/javase-jdk11-downloads.html));
-* Apache Maven (download from [the official website](https://maven.apache.org/download.cgi)).
+- Apache Maven (download from [the official website](https://maven.apache.org/download.cgi)).
 
 ### Step 4. Set environment variables
 
@@ -127,9 +127,10 @@ To run the Java example code, install the Java version 11 appropriate for your O
 
    Unzip the downloaded archive with the maven to any directory, it will be something like this:
 
-    ```
-    C:\apache-maven-3.8.1
    ```
+   C:\apache-maven-3.8.1
+   ```
+
    In **Windows 7** right click **My Computer** and select **Properties**, then click **Advanced**.
 
    In **Windows 8** go to **Control Panel** -> **System** -> **Advanced System Settings**.
@@ -166,9 +167,9 @@ To run the Java example code, install the Java version 11 appropriate for your O
    ```
 3. Open your browser using **server.address** and **server.port**:
 
-     ```
-     http://server.address:server.port/
-     ```
+   ```
+   http://server.address:server.port/
+   ```
 
 ### Step 6. Check accessibility
 
@@ -197,71 +198,74 @@ Server [for Linux](https://helpcenter.onlyoffice.com/installation/docs-developer
 
    a) archive with Java-Spring:
 
-    ```
-    wget https://api.onlyoffice.com/app_data/editor/Java.Spring.Example.zip
-    ```
+   ```
+   wget https://api.onlyoffice.com/app_data/editor/Java.Spring.Example.zip
+   ```
 
-    ```
-    unzip Java.Spring.Example.zip
-    ```
+   ```
+   unzip Java.Spring.Example.zip
+   ```
+
    b) git repository:
-    ```
-    git clone https://github.com/ONLYOFFICE/document-server-integration.git
-    ```
 
+   ```
+   git clone https://github.com/ONLYOFFICE/document-server-integration.git
+   ```
 
 3. Change the current directory for the project directory:
 
    a) from archive
 
-    ```
+   ```
    cd Java\ Spring\ Example/
    ```
+
    b) from git repository
-    ```
-    cd document-server-integration/web/documentserver-example/java-spring
-    ```
-4. Edit the *src/main/resources/application.properties* configuration file. Specify the name of your local server with
+
+   ```
+   cd document-server-integration/web/documentserver-example/java-spring
+   ```
+
+4. Edit the _src/main/resources/application.properties_ configuration file. Specify the name of your local server with
    the ONLYOFFICE Document Server installed.
 
-    ```
-    nano src/main/resources/application.properties
-    ```
+   ```
+   nano src/main/resources/application.properties
+   ```
 
    Edit the following lines:
 
-    ```
-    files.storage=
-    server.port=port
-    files.docservice.url.site=https://documentserver/
-    ```
+   ```
+   files.storage=
+   server.port=port
+   files.docservice.url.site=https://documentserver/
+   ```
 
    where the **documentserver** is the name of the server with the ONLYOFFICE Docs installed, **port** is any available
    port and **files.storage** is the path where files will be created and stored (in the project folder by default). You
    can set an absolute path.
 
-
 5. Install **Maven**:
 
-    ```
-    sudo apt-get install maven
-    ```
+   ```
+   sudo apt-get install maven
+   ```
 
 6. Build:
 
-    ```
-    mvn package
-    ```
+   ```
+   mvn package
+   ```
 
 7. Start Java-Spring example:
-    ```
-    ./mvnw spring-boot:run
-    ```
+   ```
+   ./mvnw spring-boot:run
+   ```
 8. Open your browser using **server.address** and **server.port**:
 
-    ```
-    http://server.address:server.port/
-    ```
+   ```
+   http://server.address:server.port/
+   ```
 
 ### Step 3. Check accessibility
 
@@ -290,31 +294,35 @@ Server [for Docker](https://helpcenter.onlyoffice.com/installation/docs-develope
 
    a) archive with Java-Spring:
 
-    ```
-    wget https://api.onlyoffice.com/app_data/editor/Java.Spring.Example.zip
-    ```
+   ```
+   wget https://api.onlyoffice.com/app_data/editor/Java.Spring.Example.zip
+   ```
 
-    ```
-    unzip Java.Spring.Example.zip
-    ```
+   ```
+   unzip Java.Spring.Example.zip
+   ```
+
    b) git repository:
-    ```
-    git clone https://github.com/ONLYOFFICE/document-server-integration.git
-    ```
 
+   ```
+   git clone https://github.com/ONLYOFFICE/document-server-integration.git
+   ```
 
 3. Change the current directory for the project directory:
 
    a) from archive
 
-    ```
+   ```
    cd Java\ Spring\ Example/
    ```
+
    b) from git repository
-    ```
-    cd document-server-integration/web/documentserver-example/java-spring
-    ```
-4. Edit the *src/main/resources/application.properties* configuration file. Specify the name of your local server with
+
+   ```
+   cd document-server-integration/web/documentserver-example/java-spring
+   ```
+
+4. Edit the _src/main/resources/application.properties_ configuration file. Specify the name of your local server with
    the ONLYOFFICE Document Server installed:
 
    ```
@@ -338,11 +346,12 @@ Server [for Docker](https://helpcenter.onlyoffice.com/installation/docs-develope
    ```
    docker-compose up
    ```
+
 7. Open your browser using **server.address** and **server.port**:
 
-      ```
-      http://server.address:server.port/
-      ```
+   ```
+   http://server.address:server.port/
+   ```
 
 ### Step 3. Check accessibility
 
@@ -357,10 +366,10 @@ specify instead of **example.com** in the configuration files.
 
 Please keep in mind the following security aspects when you are using test examples:
 
-* There is no protection of the storage from unauthorized access since there is no need for authorization.
-* There are no checks against parameter substitution in links, since the parameters are generated by the code according
+- There is no protection of the storage from unauthorized access since there is no need for authorization.
+- There are no checks against parameter substitution in links, since the parameters are generated by the code according
   to the pre-arranged scripts.
-* There are no data checks in requests of saving the file after editing, since each test example is intended for
+- There are no data checks in requests of saving the file after editing, since each test example is intended for
   requests only from ONLYOFFICE Document Server.
-* There are no prohibitions on using test examples from other sites, since they are intended to interact with ONLYOFFICE
+- There are no prohibitions on using test examples from other sites, since they are intended to interact with ONLYOFFICE
   Document Server from another domain.

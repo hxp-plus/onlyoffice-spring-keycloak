@@ -77,15 +77,15 @@ public class DefaultDocumentManager implements DocumentManager {
 
     // get a file name with an index if the file with such a name already exists
     public String getCorrectName(final String fileName) {
-        String baseName = fileUtility.getFileNameWithoutExtension(fileName);  // get file name without extension
-        String ext = fileUtility.getFileExtension(fileName);  // get file extension
-        String name = baseName + "." + ext;  // create a full file name
+        String baseName = fileUtility.getFileNameWithoutExtension(fileName); // get file name without extension
+        String ext = fileUtility.getFileExtension(fileName); // get file extension
+        String name = baseName + "." + ext; // create a full file name
 
         Path path = Paths.get(storagePathBuilder.getFileLocation(name));
 
         // run through all the files with such a name in the storage directory
         for (int i = 1; Files.exists(path); i++) {
-            name = baseName + " (" + i + ")." + ext;  // and add an index to the base name
+            name = baseName + " (" + i + ")." + ext; // and add an index to the base name
             path = Paths.get(storagePathBuilder.getFileLocation(name));
         }
 
@@ -95,11 +95,11 @@ public class DefaultDocumentManager implements DocumentManager {
     // get file URL
     public String getFileUri(final String fileName, final Boolean forDocumentServer) {
         try {
-            String serverPath = storagePathBuilder.getServerUrl(forDocumentServer);  // get server URL
-            String hostAddress = storagePathBuilder.getStorageLocation();  // get the storage directory
+            String serverPath = storagePathBuilder.getServerUrl(forDocumentServer); // get server URL
+            String hostAddress = storagePathBuilder.getStorageLocation(); // get the storage directory
             String filePathDownload = !fileName.contains(InetAddress.getLocalHost().getHostAddress()) ? fileName
                     : fileName.substring(fileName.indexOf(InetAddress.getLocalHost()
-                    .getHostAddress()) + InetAddress.getLocalHost().getHostAddress().length() + 1);
+                            .getHostAddress()) + InetAddress.getLocalHost().getHostAddress().length() + 1);
             if (!filesStorage.isEmpty() && filePathDownload.contains(filesStorage)) {
                 filePathDownload = filePathDownload.substring(filesStorage.length() + 1);
             }
@@ -115,19 +115,19 @@ public class DefaultDocumentManager implements DocumentManager {
 
     // get file URL
     public String getHistoryFileUrl(final String fileName, final Integer version, final String file,
-                                    final Boolean forDocumentServer) {
+            final Boolean forDocumentServer) {
         try {
-            String serverPath = storagePathBuilder.getServerUrl(forDocumentServer);  // get server URL
-            String hostAddress = storagePathBuilder.getStorageLocation();  // get the storage directory
+            String serverPath = storagePathBuilder.getServerUrl(forDocumentServer); // get server URL
+            String hostAddress = storagePathBuilder.getStorageLocation(); // get the storage directory
             String filePathDownload = !fileName.contains(InetAddress.getLocalHost().getHostAddress()) ? fileName
                     : fileName.substring(fileName.indexOf(InetAddress.getLocalHost().getHostAddress())
-                    + InetAddress.getLocalHost().getHostAddress().length() + 1);
+                            + InetAddress.getLocalHost().getHostAddress().length() + 1);
             String userAddress = forDocumentServer ? "&userAddress" + URLEncoder
                     .encode(hostAddress, java.nio.charset.StandardCharsets.UTF_8.toString()) : "";
             String filePath = serverPath + "/downloadhistory?fileName=" + URLEncoder
                     .encode(filePathDownload, java.nio.charset.StandardCharsets.UTF_8.toString())
-                + "&ver=" + version + "&file=" + file
-                + userAddress;
+                    + "&ver=" + version + "&file=" + file
+                    + userAddress;
             return filePath;
         } catch (UnsupportedEncodingException | UnknownHostException e) {
             return "";
@@ -142,7 +142,7 @@ public class DefaultDocumentManager implements DocumentManager {
             String query = trackUrl + "?fileName="
                     + URLEncoder.encode(fileName, java.nio.charset.StandardCharsets.UTF_8.toString())
                     + "&userAddress=" + URLEncoder
-                    .encode(storageAddress, java.nio.charset.StandardCharsets.UTF_8.toString());
+                            .encode(storageAddress, java.nio.charset.StandardCharsets.UTF_8.toString());
             return serverPath + query;
         } catch (UnsupportedEncodingException e) {
             return "";
@@ -172,14 +172,14 @@ public class DefaultDocumentManager implements DocumentManager {
 
         // run through all the stored files
         for (File file : storageMutator.getStoredFiles()) {
-            Map<String, Object> map = new LinkedHashMap<>();  // write all the parameters to the map
+            Map<String, Object> map = new LinkedHashMap<>(); // write all the parameters to the map
             map.put("version", storagePathBuilder.getFileVersion(file.getName(), false));
             map.put("id", serviceConverter
                     .generateRevisionId(storagePathBuilder.getStorageLocation()
                             + "/" + file.getName() + "/"
                             + Paths.get(storagePathBuilder.getFileLocation(file.getName()))
-                            .toFile()
-                            .lastModified()));
+                                    .toFile()
+                                    .lastModified()));
             map.put("contentLength", new BigDecimal(String.valueOf((file.length() / Double.valueOf(KILOBYTE_SIZE))))
                     .setScale(2, RoundingMode.HALF_UP) + " KB");
             map.put("pureContentLength", file.length());
@@ -216,30 +216,29 @@ public class DefaultDocumentManager implements DocumentManager {
     // create demo document
     public String createDemo(final String fileExt, final Boolean sample, final String uid, final String uname) {
         String demoName = (sample ? "sample." : "new.")
-                + fileExt;  // create sample or new template file with the necessary extension
-        String demoPath =
-            "assets"
-            + File.separator
-            + "document-templates"
-            + File.separator
-            + (sample ? "sample" : "new")
-            + File.separator
-            + demoName;
+                + fileExt; // create sample or new template file with the necessary extension
+        String demoPath = "assets"
+                + File.separator
+                + "document-templates"
+                + File.separator
+                + (sample ? "sample" : "new")
+                + File.separator
+                + demoName;
 
         // get a file name with an index if the file with such a name already exists
         String fileName = getCorrectName(demoName);
 
         InputStream stream = Thread.currentThread()
-                                    .getContextClassLoader()
-                                    .getResourceAsStream(demoPath);  // get the input file stream
+                .getContextClassLoader()
+                .getResourceAsStream(demoPath); // get the input file stream
 
         if (stream == null) {
             return null;
         }
 
         storageMutator.createFile(Path.of(storagePathBuilder
-                .getFileLocation(fileName)), stream);  // create a file in the specified directory
-        storageMutator.createMeta(fileName, uid, uname);  // create meta information of the demo file
+                .getFileLocation(fileName)), stream); // create a file in the specified directory
+        storageMutator.createMeta(fileName, uid, uname); // create meta information of the demo file
 
         return fileName;
     }

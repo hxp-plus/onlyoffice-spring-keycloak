@@ -32,7 +32,7 @@ public class DefaultCustomizationConfigurer implements CustomizationConfigurer<D
     @Override
     // define the customization configurer
     public void configure(final Customization customization, final DefaultCustomizationWrapper wrapper) {
-        Action action = wrapper.getAction();  // get the action parameter from the customization wrapper
+        Action action = wrapper.getAction(); // get the action parameter from the customization wrapper
         User user = wrapper.getUser();
     }
 }

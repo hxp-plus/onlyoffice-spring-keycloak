@@ -85,12 +85,11 @@ public class EditorController {
     @GetMapping(path = "${url.editor}")
     // process request to open the editor page
     public String index(@RequestParam("fileName") final String fileName,
-                        @RequestParam(value = "action", required = false) final String actionParam,
-                        @RequestParam(value = "type", required = false) final String typeParam,
-                        @RequestParam(value = "actionLink", required = false) final String actionLink,
-                        @RequestParam(value = "directUrl", required = false,
-                                defaultValue = "false") final Boolean directUrl,
-                        final Model model) throws JsonProcessingException {
+            @RequestParam(value = "action", required = false) final String actionParam,
+            @RequestParam(value = "type", required = false) final String typeParam,
+            @RequestParam(value = "actionLink", required = false) final String actionLink,
+            @RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl,
+            final Model model) throws JsonProcessingException {
         final String uid = "1";
         final String lang = "zh";
         Action action = Action.edit;
@@ -134,8 +133,7 @@ public class EditorController {
                         .user(user)
                         .actionData(actionLink)
                         .isEnableDirectUrl(directUrl)
-                        .build()
-        );
+                        .build());
 
         String userFullName = "匿名用户";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -153,10 +151,10 @@ public class EditorController {
         model.addAttribute("docserviceApiUrl", docserviceSite + docserviceApiUrl);
 
         // get an image and add it to the model
-        model.addAttribute("dataInsertImage",  getInsertImage(directUrl));
+        model.addAttribute("dataInsertImage", getInsertImage(directUrl));
 
         // get a document for comparison and add it to the model
-        model.addAttribute("dataDocument",  getCompareFile(directUrl));
+        model.addAttribute("dataDocument", getCompareFile(directUrl));
 
         // get recipients data for mail merging and add it to the model
         model.addAttribute("dataSpreadsheet", getSpreadsheet(directUrl));
@@ -174,7 +172,7 @@ public class EditorController {
         return "editor.html";
     }
 
-    private List<Mentions> getUserMentions(final String uid) {  // get user data for mentions
+    private List<Mentions> getUserMentions(final String uid) { // get user data for mentions
         List<Mentions> usersForMentions = new ArrayList<>();
         if (uid != null && !uid.equals("4")) {
             List<User> list = userService.findAll();
@@ -190,20 +188,20 @@ public class EditorController {
         return usersForMentions;
     }
 
-    private List<UserInfo> getUsersInfo(final String uid) {  // get user data for mentions
+    private List<UserInfo> getUsersInfo(final String uid) { // get user data for mentions
         List<UserInfo> usersInfo = new ArrayList<>();
         if (uid != null && !uid.equals("4")) {
             List<User> list = userService.findAll();
             for (User u : list) {
                 String image = u.getAvatar() ? storagePathBuilder.getServerUrl(true) + "/css/img/uid-"
-                + u.getId() + ".png" : null;
+                        + u.getId() + ".png" : null;
                 usersInfo.add(new UserInfo(u.getId(), u.getName(), u.getEmail(), image));
             }
         }
         return usersInfo;
     }
 
-    private List<Protect> getUserProtect(final String uid) {  // get user data for protect
+    private List<Protect> getUserProtect(final String uid) { // get user data for protect
         List<Protect> usersForProtect = new ArrayList<>();
         if (uid != null && !uid.equals("4")) {
             List<User> list = userService.findAll();
@@ -219,9 +217,8 @@ public class EditorController {
         return usersForProtect;
     }
 
-
     @SneakyThrows
-    private String getInsertImage(final Boolean directUrl) {  // get an image that will be inserted into the document
+    private String getInsertImage(final Boolean directUrl) { // get an image that will be inserted into the document
         Map<String, Object> dataInsertImage = new HashMap<>();
         dataInsertImage.put("fileType", "png");
         dataInsertImage.put("url", storagePathBuilder.getServerUrl(true) + "/css/img/logo.png");
@@ -264,7 +261,7 @@ public class EditorController {
 
     @SneakyThrows
     private String getSpreadsheet(final Boolean directUrl) {
-        Map<String, Object> dataSpreadsheet = new HashMap<>();  // get recipients data for mail merging
+        Map<String, Object> dataSpreadsheet = new HashMap<>(); // get recipients data for mail merging
         dataSpreadsheet.put("fileType", "csv");
         dataSpreadsheet.put("url", storagePathBuilder.getServerUrl(true) + "/csv");
         if (directUrl) {

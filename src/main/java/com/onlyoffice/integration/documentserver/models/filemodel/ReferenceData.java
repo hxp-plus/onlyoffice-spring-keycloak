@@ -28,6 +28,7 @@ public class ReferenceData {
     private FileStoragePathBuilder storagePathBuilder;
     private final String instanceId;
     private final Map<String, String> fileKey;
+
     public ReferenceData(final String fileName, final String curUserHostAddress, final User user) {
         instanceId = storagePathBuilder.getServerUrl(true);
         Map<String, String> fileKeyList = new HashMap<>();

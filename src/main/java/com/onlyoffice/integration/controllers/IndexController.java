@@ -73,7 +73,9 @@ public class IndexController {
     private String serverVersion;
 
     @GetMapping("${url.index}")
-    public String index(@RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl, final Model model) {
+    public String index(
+            @RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl,
+            final Model model) {
         String userFullName = "匿名用户";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getPrincipal().getClass());
@@ -82,15 +84,14 @@ public class IndexController {
             userFullName = userDetails.getFullName();
         }
 
-
-        java.io.File[] files = storageMutator.getStoredFiles();  // get all the stored files from the storage
+        java.io.File[] files = storageMutator.getStoredFiles(); // get all the stored files from the storage
         List<String> docTypes = new ArrayList<>();
         List<Boolean> filesEditable = new ArrayList<>();
         List<String> versions = new ArrayList<>();
         List<Boolean> isFillFormDoc = new ArrayList<>();
 
-        for (java.io.File file : files) {  // run through all the files
-            String fileName = file.getName();  // get file name
+        for (java.io.File file : files) { // run through all the files
+            String fileName = file.getName(); // get file name
             // add a document type of each file to the list
             docTypes.add(fileUtility.getDocumentType(fileName).toString().toLowerCase());
             // specify if a file is editable or not
@@ -116,7 +117,7 @@ public class IndexController {
 
     @PostMapping("/config")
     @ResponseBody
-    public HashMap<String, String> configParameters() {  // get configuration parameters
+    public HashMap<String, String> configParameters() { // get configuration parameters
         HashMap<String, String> configuration = new HashMap<>();
         // put a list of the extensions that can be filled to config
         configuration.put("FillExtList", String.join(",", fileUtility.getFillExts()));

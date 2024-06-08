@@ -33,9 +33,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CommentGroup {
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = SerializerFilter.class)
-    private List<String> view;  // define a list of groups whose comments the user can view
+    private List<String> view; // define a list of groups whose comments the user can view
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = SerializerFilter.class)
-    private List<String> edit;  // define a list of groups whose comments the user can edit
+    private List<String> edit; // define a list of groups whose comments the user can edit
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = SerializerFilter.class)
-    private List<String> remove;  // define a list of groups whose comments the user can remove
+    private List<String> remove; // define a list of groups whose comments the user can remove
 }

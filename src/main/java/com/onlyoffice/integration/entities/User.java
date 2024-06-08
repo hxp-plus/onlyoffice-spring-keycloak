@@ -41,7 +41,7 @@ public class User extends AbstractEntity {
     private Group group;
     @OneToOne
     private Permission permissions;
-//    @Column(columnDefinition = "CLOB")
+    // @Column(columnDefinition = "CLOB")
     @ElementCollection
     @CollectionTable(name = "user_descriptions")
     private List<String> descriptions;

@@ -37,21 +37,20 @@ public abstract class AbstractMapper<E extends AbstractEntity, M extends Abstrac
     }
 
     @Override
-    public M toModel(final E entity) {  // convert the entity to the model
-        return Objects.isNull(entity)  // check if an entity is not empty
+    public M toModel(final E entity) { // convert the entity to the model
+        return Objects.isNull(entity) // check if an entity is not empty
                 ? null
-                : mapper.map(entity, modelClass);  // and add it to the model mapper
+                : mapper.map(entity, modelClass); // and add it to the model mapper
     }
 
-    Converter<E, M> modelConverter() {  // specify the model converter
+    Converter<E, M> modelConverter() { // specify the model converter
         return context -> {
-            E source = context.getSource();  // get the source entity
-            M destination = context.getDestination();  // get the destination model
-            handleSpecificFields(source, destination);  // map the entity to the model
+            E source = context.getSource(); // get the source entity
+            M destination = context.getDestination(); // get the destination model
+            handleSpecificFields(source, destination); // map the entity to the model
             return context.getDestination();
         };
     }
-
 
     void handleSpecificFields(final E source, final M destination) {
     }

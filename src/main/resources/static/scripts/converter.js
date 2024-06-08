@@ -23,12 +23,11 @@ var UrlEditor;
 var FillExtList;
 
 if (typeof jQuery !== "undefined") {
-    jQuery.post('/config',
-        function(data) {
-            FillExtList = data.FillExtList.split(',');
-            ConverExtList = data.ConverExtList.split(',');
-            EditedExtList = data.EditedExtList.split(',');
-            UrlConverter = data.UrlConverter;
-            UrlEditor = data.UrlEditor;
-    });
+  jQuery.post("/config", function (data) {
+    FillExtList = data.FillExtList.split(",");
+    ConverExtList = data.ConverExtList.split(",");
+    EditedExtList = data.EditedExtList.split(",");
+    UrlConverter = data.UrlConverter;
+    UrlEditor = data.UrlEditor;
+  });
 }

@@ -29,12 +29,13 @@ import org.springframework.stereotype.Component;
 public class ForcesaveCallback implements Callback {
     @Autowired
     private CallbackManager callbackManager;
+
     @Override
     public int handle(final Track body,
-                      final String fileName) {  // handle the callback when the force saving request is performed
+            final String fileName) { // handle the callback when the force saving request is performed
         int result = 0;
         try {
-            callbackManager.processForceSave(body, fileName);  // file force saving process
+            callbackManager.processForceSave(body, fileName); // file force saving process
         } catch (Exception ex) {
             ex.printStackTrace();
             result = 1;
@@ -43,8 +44,9 @@ public class ForcesaveCallback implements Callback {
     }
 
     @Override
-    public int getStatus() {  // get document status
-        // return status 6 - document is being edited, but the current document state is saved
+    public int getStatus() { // get document status
+        // return status 6 - document is being edited, but the current document state is
+        // saved
         return Status.MUST_FORCE_SAVE.getCode();
     }
 }

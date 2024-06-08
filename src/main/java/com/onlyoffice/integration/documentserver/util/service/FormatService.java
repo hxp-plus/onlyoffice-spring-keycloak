@@ -24,10 +24,16 @@ import java.util.List;
 
 public interface FormatService {
     List<Format> getFormats();
+
     List<Format> getFormatsByAction(String action);
+
     List<String> allExtensions();
+
     List<String> fillableExtensions();
+
     List<String> viewableExtensions();
+
     List<String> editableExtensions();
+
     List<String> autoConvertExtensions();
 }

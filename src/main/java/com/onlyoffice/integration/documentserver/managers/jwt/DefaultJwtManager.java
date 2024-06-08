@@ -50,10 +50,10 @@ public class DefaultJwtManager implements JwtManager {
             // build a HMAC signer using a SHA-256 hash
             Signer signer = HMACSigner.newSHA256Signer(tokenSecret);
             JWT jwt = new JWT();
-            for (String key : payloadClaims.keySet()) {  // run through all the keys from the payload
-                jwt.addClaim(key, payloadClaims.get(key));  // and write each claim to the jwt
+            for (String key : payloadClaims.keySet()) { // run through all the keys from the payload
+                jwt.addClaim(key, payloadClaims.get(key)); // and write each claim to the jwt
             }
-            return JWT.getEncoder().encode(jwt, signer);  // sign and encode the JWT to a JSON string representation
+            return JWT.getEncoder().encode(jwt, signer); // sign and encode the JWT to a JSON string representation
         } catch (Exception e) {
             return "";
         }
@@ -85,15 +85,15 @@ public class DefaultJwtManager implements JwtManager {
     public JSONObject parseBody(final String payload, final String header) {
         JSONObject body;
         try {
-            Object obj = parser.parse(payload);  // get body parameters by parsing the payload
+            Object obj = parser.parse(payload); // get body parameters by parsing the payload
             body = (JSONObject) obj;
         } catch (Exception ex) {
             throw new RuntimeException("{\"error\":1,\"message\":\"JSON Parsing error\"}");
         }
-        if (tokenEnabled() && tokenUseForRequest()) {  // check if the token is enabled
-            String token = (String) body.get("token");  // get token from the body
-            if (token == null) {  // if token is empty
-                if (header != null && !header.isBlank()) {  // and the header is defined
+        if (tokenEnabled() && tokenUseForRequest()) { // check if the token is enabled
+            String token = (String) body.get("token"); // get token from the body
+            if (token == null) { // if token is empty
+                if (header != null && !header.isBlank()) { // and the header is defined
 
                     // get token from the header (it is placed after the Bearer prefix if it exists)
                     token = header.startsWith("Bearer ") ? header.substring("Bearer ".length()) : header;
@@ -103,14 +103,14 @@ public class DefaultJwtManager implements JwtManager {
                 throw new RuntimeException("{\"error\":1,\"message\":\"JWT expected\"}");
             }
 
-            JWT jwt = readToken(token);  // read token
+            JWT jwt = readToken(token); // read token
             if (jwt == null) {
                 throw new RuntimeException("{\"error\":1,\"message\":\"JWT validation failed\"}");
             }
-            if (jwt.getObject("payload") != null) {  // get payload from the token and check if it is not empty
+            if (jwt.getObject("payload") != null) { // get payload from the token and check if it is not empty
                 try {
-                    @SuppressWarnings("unchecked") LinkedHashMap<String, Object> jwtPayload =
-                            (LinkedHashMap<String, Object>) jwt.getObject("payload");
+                    @SuppressWarnings("unchecked")
+                    LinkedHashMap<String, Object> jwtPayload = (LinkedHashMap<String, Object>) jwt.getObject("payload");
 
                     jwt.claims = jwtPayload;
                 } catch (Exception ex) {
