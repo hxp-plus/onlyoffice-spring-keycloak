@@ -17,3 +17,5 @@
 /documents/
 **.tar
 pom.xml.versionsBackup
+/dev-environment/images/*.tar
+/dev-environment/images/*.tar.gz
