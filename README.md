@@ -16,27 +16,32 @@
 2. 将 Spring 后端对接 Keycloak
 3. 对 Spring 后端编译成 jar 后无法运行的问题进行修复
 4. 将 Spring 后端默认文件上传最大大小修改为原先的 10 倍
+5. 将 document-server 修改为使用外置 rabbitmq 、 redis 、 postgresql 、 nginx
+6. 将 document-server 修改为使用 supervisor 进行启动
 
-## 测试环境搭建
+## 环境搭建
 
 使用 docker-compose 搭建测试环境：
 
 ```
 cd dev-environment
-docker-compose up
+docker compose up
 ```
 
-注意需要把环境 `docker-compose.yml` 中所有的 `ubuntu.hxp.lan` 替换成 docker 机器的 IP
-地址或者域名，修改 `application.properties` 配置文件里的 `ubuntu.hxp.lan` 。初次启动 Keycloak
-连接不上为已知问题，重启容器即可。其中 `document-server` 镜像的构建需要 60GB 磁盘空间和 4 小时编译时间，推荐直接把编译好生成的镜像导入来跳过此步骤。
-在 Keycloak 里创建相应的 Realm 和 client ，需要操作的步骤有：
+有以下几点注意事项：
 
-1. 新建名称为 test 的 Realm
-2. 新建类型为 OpenID Connect ，ID 为 test-client 的 client
-3. test-client 的 Client authentication 为 OFF
-4. test-client 的 Valid redirect URIs 为 \*
-5. test-client 的 Web origins 为 \*
-6. 在名称为 test 的 Realm 里新建用户 testuser
+- 需要把环境 `compose.yaml` 中所有的 `ubuntu.hxp.lan` 替换成 docker 机器的 IP
+地址或者域名，修改 `application.properties` 配置文件里的 `ubuntu.hxp.lan` 。
+- 初次启动 Keycloak 连接不上为已知问题，重启容器即可。
+- `document-server` 镜像的构建需要 60GB 磁盘空间和 4 小时编译时间，推荐直接把编译好生成的镜像导入来跳过此步骤。
+- 需要在 Keycloak 里创建相应的 Realm 和 client ，需要操作的步骤有：
+  1. 新建名称为 test 的 Realm
+  2. 新建类型为 OpenID Connect ，ID 为 test-client 的 client
+  3. test-client 的 Client authentication 为 OFF
+  4. test-client 的 Valid redirect URIs 为 \*
+  5. test-client 的 Web origins 为 \*
+  6. 在名称为 test 的 Realm 里新建用户 testuser
+- 初次启动需要初始化postgresql库：`docker exec onlyoffice-postgresql /bin/sh -c 'PG_PASSWORD=onlyoffice psql -h 127.0.0.1 -U onlyoffice -d onlyoffice < /root/createdb.sql'`
 
 之后启动 Spring 后端进行测试。
 
