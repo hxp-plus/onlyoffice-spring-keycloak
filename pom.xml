@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.onlyoffice</groupId>
 	<artifactId>onlyoffice-server</artifactId>
-	<version>v20240604</version>
+	<version>v20240611</version>
 	<name>Java Spring Integration Example</name>
 	<description>ONLYOFFICE Java Spring Integration</description>
 	<properties>
@@ -71,6 +71,11 @@
 			<version>2.17.1</version>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<version>3.2.0</version>
@@ -78,6 +83,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<version>2.7.18</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
