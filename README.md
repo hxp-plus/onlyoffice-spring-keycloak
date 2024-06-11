@@ -45,6 +45,33 @@ docker compose up
 
 之后启动 Spring 后端进行测试。
 
+## 更新记录
+
+### v20240611 内测版
+
+- 升级 springboot 到 2 的最终版本 2.7.18 。
+- 优化容器镜像：使用 supervisor 启动 onlyoffice-doc 服务，防止容器内进程崩溃后无法自动重启。
+- 优化容器镜像：将 onlyoffice-doc 镜像改为使用外部 PostgreSQL 、 RabbitMQ 和 Redis 。
+- 升级所有 maven 依赖到最新版本。
+- 解决主页删除文档没有二次确认，导致容易误删的问题。
+
+### v20240604 内测版
+
+- 修复了用户没有登录过的Cookie时，直接打开/editor页面报400的BUG。
+- 将 application.properties 修改为不打包到 jar 中，在启动时手动指定。
+- 修改主页布局。
+- 修复上传文档后立刻编辑报错的BUG。
+- 修复主页下载按钮下载的文档为初次上传版本的BUG。
+- 修复 title 的 typo 。
+
+### v20240531 内测版
+
+- 项目初始化。
+- 解决了默认上传大小限制过小问题。
+- 为 Keycloak 认证增加支持。
+- 修复原项目编译成jar包无法正常运行的问题。
+- 完成界面汉化。
+
 # 以下为原 README
 
 ## Overview
