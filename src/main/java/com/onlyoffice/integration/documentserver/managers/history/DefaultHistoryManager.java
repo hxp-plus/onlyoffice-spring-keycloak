@@ -162,13 +162,17 @@ public class DefaultHistoryManager implements HistoryManager {
             histObj.put("history", hist);
 
             try {
-                return new String[] { objectMapper.writeValueAsString(histObj),
-                        objectMapper.writeValueAsString(histData) };
+                return new String[] {
+                        objectMapper.writeValueAsString(histObj),
+                        objectMapper.writeValueAsString(histData)
+                };
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
-        return new String[] { "", "" };
+        return new String[] {
+                "", ""
+        };
     }
 
     // todo: Refactoring

@@ -22,6 +22,7 @@ import com.onlyoffice.integration.documentserver.models.Format;
 
 import java.util.List;
 
+
 public interface FormatService {
     List<Format> getFormats();
 

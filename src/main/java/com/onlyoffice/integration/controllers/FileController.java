@@ -154,8 +154,10 @@ public class FileController {
     private ResponseEntity<Resource> downloadSample(final String fileName) {
         String serverPath = System.getProperty("user.dir");
         String contentType = "application/octet-stream";
-        String[] fileLocation = new String[] { serverPath, "src", "main", "resources", "assets", "document-templates",
-                "sample", fileName };
+        String[] fileLocation = new String[] {
+                serverPath, "src", "main", "resources", "assets", "document-templates",
+                "sample", fileName
+        };
         Path filePath = Paths.get(String.join(File.separator, fileLocation));
         Resource resource;
         try {
