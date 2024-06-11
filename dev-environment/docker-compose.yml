@@ -1,20 +1,22 @@
 version: '3'
 
 services:
-  kc_mysql:
-    image: mysql:8.0.37
+  keycloak-mysql:
+    container_name: keycloak-mysql
+    image: mysql:8.0.37-debian
     volumes:
-      - kc_mysql_data:/var/lib/mysql
+      - keycloak-mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: MyRootPassword
       MYSQL_DATABASE: keycloak
       MYSQL_USER: keycloak
       MYSQL_PASSWORD: MyKeycloakMySQLPassword
-  keycloak:
+  keycloak-app:
+    container_name: keycloak-app
     image: quay.io/keycloak/keycloak:24.0.2
     command: start-dev
     environment:
-      KC_HOSTNAME: ubuntu.hxp.lan
+      KC_HOSTNAME: gentoo.hxp.lan
       KC_HOSTNAME_PORT: 8080
       KC_HOSTNAME_STRICT_BACKCHANNEL: false
       KC_HTTP_ENABLED: true
@@ -23,18 +25,61 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_DB: mysql
-      KC_DB_URL: jdbc:mysql://kc_mysql:3306/keycloak
+      KC_DB_URL: jdbc:mysql://keycloak-mysql:3306/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: MyKeycloakMySQLPassword
     ports:
       - 8080:8080
     depends_on:
-      - kc_mysql
-  document-server:
-    image: hxp.plus/onlyoffice/document-server:v20240531
-    build: ./document-server-unlimited
+      - keycloak-mysql
+  onlyoffice-docs:
+    container_name: onlyoffice-docs
+    image: hxp.plus/onlyoffice/onlyoffice-docs:v20240611
+    build: ./onlyoffice-docs
+    expose:
+      - '8000'
+    volumes:
+      - onlyoffice-cache:/var/lib/onlyoffice
+    depends_on:
+      - onlyoffice-redis
+      - onlyoffice-rabbitmq
+      - onlyoffice-postgres
+  onlyoffice-redis:
+    container_name: onlyoffice-redis
+    image: docker.io/library/redis:7.4-rc1-alpine3.20
+    restart: always
+    expose:
+      - '6379'
+  onlyoffice-rabbitmq:
+    container_name: onlyoffice-rabbitmq
+    image: docker.io/library/rabbitmq:3.13.3-alpine
+    restart: always
+    expose:
+      - '5672'
+  onlyoffice-postgres:
+    container_name: onlyoffice-postgresql
+    image: docker.io/library/postgres:13.15-alpine3.20
+    environment:
+      - POSTGRES_DB=onlyoffice
+      - POSTGRES_USER=onlyoffice
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    expose:
+      - '5432'
+    volumes:
+      - onlyoffice-postgres:/var/lib/postgresql
+  onlyoffice-nginx:
+    container_name: onlyoffice-nginx
+    image: docker.io/library/nginx:1.27.0-alpine3.19
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 8081:80
+    depends_on:
+      - onlyoffice-docs
 volumes:
-  kc_mysql_data:
+  keycloak-mysql:
+    driver: local
+  onlyoffice-postgres:
+    driver: local
+  onlyoffice-cache:
     driver: local

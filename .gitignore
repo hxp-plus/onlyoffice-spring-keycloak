@@ -16,3 +16,4 @@
 /target/
 /documents/
 **.tar
+pom.xml.versionsBackup
