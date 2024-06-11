@@ -17,8 +17,7 @@ FROM ubuntu:20.04
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ >/etc/timezone
 COPY --from=0 /build/build_tools/out/linux_64/onlyoffice/documentserver /var/www/onlyoffice/documentserver
-RUN apt-get -y update && apt-get -y install sudo vim ttf-wqy-zenhei fonts-wqy-microhei supervisor
-COPY production-linux.json /var/www/onlyoffice/documentserver/server/Common/config/production-linux.json
+RUN apt-get -y update && apt-get -y install sudo vim ttf-wqy-zenhei fonts-wqy-microhei supervisor curl iputils-ping
 RUN cd /var/www/onlyoffice/documentserver && \
   mkdir fonts && \
   LD_LIBRARY_PATH=${PWD}/server/FileConverter/bin server/tools/allfontsgen \
