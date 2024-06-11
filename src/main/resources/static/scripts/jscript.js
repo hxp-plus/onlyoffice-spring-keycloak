@@ -316,20 +316,23 @@ if (typeof jQuery !== "undefined") {
 
   jq(document).on("click", ".delete-file", function () {
     var fileName = encodeURIComponent(jq(this).attr("data-filename"));
-
-    var requestAddress = "/delete";
-
-    jq.ajax({
-      async: true,
-      contentType: "application/json",
-      type: "post",
-      dataType: "json",
-      data: JSON.stringify({ filename: fileName, filePass: null }),
-      url: requestAddress,
-      complete: function (data) {
-        document.location.reload();
-      },
-    });
+    var msg = "您真的确定要删除" + fileName + "吗？\n\n请确认！";
+    if (confirm(msg)) {
+      var requestAddress = "/delete";
+      jq.ajax({
+        async: true,
+        contentType: "application/json",
+        type: "post",
+        dataType: "json",
+        data: JSON.stringify({ filename: fileName, filePass: null }),
+        url: requestAddress,
+        complete: function (data) {
+          document.location.reload();
+        },
+      });
+    } else {
+      return false;
+    }
   });
 
   function showUserTooltip(isMobile) {
