@@ -94,7 +94,6 @@ public class DefaultJwtManager implements JwtManager {
             String token = (String) body.get("token"); // get token from the body
             if (token == null) { // if token is empty
                 if (header != null && !header.isBlank()) { // and the header is defined
-
                     // get token from the header (it is placed after the Bearer prefix if it exists)
                     token = header.startsWith("Bearer ") ? header.substring("Bearer ".length()) : header;
                 }
@@ -102,7 +101,6 @@ public class DefaultJwtManager implements JwtManager {
             if (token == null || token.isBlank()) {
                 throw new RuntimeException("{\"error\":1,\"message\":\"JWT expected\"}");
             }
-
             JWT jwt = readToken(token); // read token
             if (jwt == null) {
                 throw new RuntimeException("{\"error\":1,\"message\":\"JWT validation failed\"}");
@@ -111,20 +109,18 @@ public class DefaultJwtManager implements JwtManager {
                 try {
                     @SuppressWarnings("unchecked")
                     LinkedHashMap<String, Object> jwtPayload = (LinkedHashMap<String, Object>) jwt.getObject("payload");
-
-                    jwt.claims = jwtPayload;
+                    jwt.otherClaims = jwtPayload;
                 } catch (Exception ex) {
                     throw new RuntimeException("{\"error\":1,\"message\":\"Wrong payload\"}");
                 }
             }
             try {
-                Object obj = parser.parse(objectMapper.writeValueAsString(jwt.claims));
+                Object obj = parser.parse(objectMapper.writeValueAsString(jwt.otherClaims));
                 body = (JSONObject) obj;
             } catch (Exception ex) {
                 throw new RuntimeException("{\"error\":1,\"message\":\"Parsing error\"}");
             }
         }
-
         return body;
     }
 }
