@@ -5,3 +5,4 @@ docker.io/library/nginx:1.27.0-alpine3.19
 docker.io/library/postgres:13.15-alpine3.20
 docker.io/library/rabbitmq:3.13.3-alpine
 docker.io/library/redis:7.4-rc1-alpine3.20
+docker.io/library/alpine:3.20.0

@@ -85,8 +85,11 @@ services:
     restart: always
 volumes:
   keycloak-mysql:
+    name: keycloak-mysql
     driver: local
   onlyoffice-cache:
+    name: onlyoffice-cache
     driver: local
   onlyoffice-postgres:
+    name: onlyoffice-postgres
     driver: local
