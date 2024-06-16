@@ -19,6 +19,7 @@
 package com.onlyoffice.integration;
 
 import com.onlyoffice.integration.documentserver.serializers.FilterState;
+import com.onlyoffice.integration.services.GroupServices;
 import com.onlyoffice.integration.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,10 +27,14 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+import static com.onlyoffice.integration.documentserver.util.Constants.ANONYMOUS_USER_ID;
+
 @Component
 public class ExampleData {
         @Autowired
         private UserServices userService;
+    @Autowired
+    private GroupServices groupServices;
 
         @PostConstruct
         public void init() {
@@ -118,10 +123,9 @@ public class ExampleData {
                 // List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                 // List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                 // new ArrayList<>(), null, false, false, false);
-
-                userService.createUser("Anonymous", "anonymous@example.com", descriptionUserFirst,
+                userService.createUser(ANONYMOUS_USER_ID,"Anonymous", "anonymous@example.com", descriptionUserFirst,
                                 "", List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                                 List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
-                                List.of(FilterState.NULL.toString()), null, true, true, true);
+                                List.of(FilterState.NULL.toString()), null, true, true, false);
         }
 }

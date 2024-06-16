@@ -1,19 +1,17 @@
 /**
- *
  * (c) Copyright Ascensio System SIA 2024
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.onlyoffice.integration.services;
@@ -21,6 +19,7 @@ package com.onlyoffice.integration.services;
 import com.onlyoffice.integration.entities.Group;
 import com.onlyoffice.integration.entities.Permission;
 import com.onlyoffice.integration.entities.User;
+import com.onlyoffice.integration.repositories.GroupRepository;
 import com.onlyoffice.integration.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,67 +29,54 @@ import java.util.Optional;
 
 @Service
 public class UserServices {
-        @Autowired
-        private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-        @Autowired
-        private GroupServices groupServices;
+    @Autowired
+    private GroupServices groupServices;
 
-        @Autowired
-        private PermissionServices permissionService;
+    @Autowired
+    private PermissionServices permissionService;
+    @Autowired
+    private GroupRepository groupRepository;
 
-        // get a list of all users
-        public List<User> findAll() {
-                return userRepository.findAll();
+    // get a list of all users
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    // get a user by their ID
+    public Optional<User> findUserById(final String id) {
+        return userRepository.findById(id);
+    }
+
+    // create a user with the specified parameters
+    public User createUser(final String id, final String name, final String email, final List<String> description, final String group, final List<String> reviewGroups, final List<String> viewGroups, final List<String> editGroups, final List<String> removeGroups, final List<String> userInfoGroups, final Boolean favoriteDoc, final Boolean chat, final Boolean protect, final Boolean avatar) {
+        Optional<User> user = userRepository.findById(id); // check if group with such a name already exists
+        if (user.isPresent()) {
+            return user.get(); // if it exists, return it
         }
+        User newUser = new User();
+        newUser.setId(id);
+        newUser.setName(name); // set the user name
+        newUser.setEmail(email); // set the user email
+        newUser.setGroup(groupServices.createGroup(group)); // set the user group
+        newUser.setDescriptions(description); // set the user description
+        newUser.setFavorite(favoriteDoc); // specify if the user has the favorite documents or not
+        newUser.setAvatar(avatar);
 
-        // get a user by their ID
-        public Optional<User> findUserById(final Integer id) {
-                return userRepository.findById(id);
-        }
+        List<Group> groupsReview = groupServices.createGroups(reviewGroups); // define the groups whose changes the user can
+        // accept/reject
+        List<Group> commentGroupsView = groupServices.createGroups(viewGroups); // defines the groups whose comments the user can view
+        List<Group> commentGroupsEdit = groupServices.createGroups(editGroups); // defines the groups whose comments the user can edit
+        List<Group> commentGroupsRemove = groupServices.createGroups(removeGroups); // defines the groups whose comments the user can remove
+        List<Group> usInfoGroups = groupServices.createGroups(userInfoGroups);
 
-        // create a user with the specified parameters
-        public User createUser(final String name, final String email,
-                        final List<String> description, final String group,
-                        final List<String> reviewGroups,
-                        final List<String> viewGroups,
-                        final List<String> editGroups,
-                        final List<String> removeGroups,
-                        final List<String> userInfoGroups, final Boolean favoriteDoc,
-                        final Boolean chat,
-                        final Boolean protect,
-                        final Boolean avatar) {
-                User newUser = new User();
-                newUser.setName(name); // set the user name
-                newUser.setEmail(email); // set the user email
-                newUser.setGroup(groupServices.createGroup(group)); // set the user group
-                newUser.setDescriptions(description); // set the user description
-                newUser.setFavorite(favoriteDoc); // specify if the user has the favorite documents or not
-                newUser.setAvatar(avatar);
+        Permission permission = permissionService.createPermission(groupsReview, commentGroupsView, commentGroupsEdit, commentGroupsRemove, usInfoGroups, chat, protect); // specify permissions for the current user
+        newUser.setPermissions(permission);
 
-                List<Group> groupsReview = groupServices
-                                .createGroups(reviewGroups); // define the groups whose changes the user can
-                                                             // accept/reject
-                List<Group> commentGroupsView = groupServices
-                                .createGroups(viewGroups); // defines the groups whose comments the user can view
-                List<Group> commentGroupsEdit = groupServices
-                                .createGroups(editGroups); // defines the groups whose comments the user can edit
-                List<Group> commentGroupsRemove = groupServices
-                                .createGroups(removeGroups); // defines the groups whose comments the user can remove
-                List<Group> usInfoGroups = groupServices.createGroups(userInfoGroups);
+        userRepository.save(newUser); // save a new user
 
-                Permission permission = permissionService
-                                .createPermission(groupsReview,
-                                                commentGroupsView,
-                                                commentGroupsEdit,
-                                                commentGroupsRemove,
-                                                usInfoGroups,
-                                                chat,
-                                                protect); // specify permissions for the current user
-                newUser.setPermissions(permission);
-
-                userRepository.save(newUser); // save a new user
-
-                return newUser;
-        }
+        return newUser;
+    }
 }

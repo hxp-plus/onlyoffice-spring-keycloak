@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PermissionServices {
@@ -52,6 +53,7 @@ public class PermissionServices {
         permission.setUserInfoGroups(userInfoGroups);
         permission.setChat(chat);
         permission.setProtect(protect);
+        permission.setId(UUID.randomUUID().toString());
 
         permissionRepository.save(permission); // save new permissions
 

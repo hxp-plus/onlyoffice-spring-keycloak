@@ -228,15 +228,9 @@ if (typeof jQuery !== "undefined") {
     var langId = getCookie("ulang");
     if (langId) langSel.val(langId);
 
-    userSel.on("change", function () {
-      setCookie("uid", userSel.val());
-    });
     langSel.on("change", function () {
       setCookie("ulang", langSel.val());
     });
-    if (!userId) {
-      setCookie("uid", 1);
-    }
     if (!langId) {
       setCookie("ulang", "en");
     }

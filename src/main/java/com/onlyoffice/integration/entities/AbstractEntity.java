@@ -36,6 +36,6 @@ import java.io.Serializable;
 @Getter
 public abstract class AbstractEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    // 这里的id必须用String，因为要存储Keycloak的sub。
+    private String id;
 }

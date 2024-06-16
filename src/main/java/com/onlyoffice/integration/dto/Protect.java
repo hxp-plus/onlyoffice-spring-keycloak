@@ -26,7 +26,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Protect {
-    private Integer id;
+    private String id;
     private String name;
     private String email;
 }

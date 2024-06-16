@@ -16,10 +16,12 @@
 
 package com.onlyoffice.integration.controllers;
 
+import com.onlyoffice.integration.documentserver.serializers.FilterState;
 import com.onlyoffice.integration.documentserver.storage.FileStorageMutator;
 import com.onlyoffice.integration.documentserver.storage.FileStoragePathBuilder;
 import com.onlyoffice.integration.documentserver.util.Misc;
 import com.onlyoffice.integration.documentserver.util.file.FileUtility;
+import com.onlyoffice.integration.entities.User;
 import com.onlyoffice.integration.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.onlyoffice.integration.documentserver.util.Constants.ANONYMOUS_USER_ID;
 
 @CrossOrigin("*")
 @Controller
@@ -71,18 +75,31 @@ public class IndexController {
 
     @Value("${server.version}")
     private String serverVersion;
+    @Autowired
+    private com.onlyoffice.integration.documentserver.models.filemodel.User user;
 
     @GetMapping("${url.index}")
     public String index(
             @RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl,
             final Model model) {
+
+        // 获取Keycloak的登录信息
         String userFullName = "匿名用户";
+        String userSub = ANONYMOUS_USER_ID;
+        String userEmail = "anonymous@example.com";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getPrincipal().getClass());
         if (authentication.getPrincipal() instanceof DefaultOidcUser) {
             DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
             userFullName = userDetails.getFullName();
+            userSub = userDetails.getSubject();
+            userEmail = userDetails.getEmail();
         }
+        // 如果用户不存在，则创建
+        User newUser = userService.createUser(userSub, userFullName, userEmail,
+                List.of(FilterState.NULL.toString()),
+                "", List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+                List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+                List.of(FilterState.NULL.toString()), null, true, true, false);
 
         java.io.File[] files = storageMutator.getStoredFiles(); // get all the stored files from the storage
         List<String> docTypes = new ArrayList<>();
@@ -108,7 +125,7 @@ public class IndexController {
         model.addAttribute("docTypes", docTypes);
         model.addAttribute("filesEditable", filesEditable);
         model.addAttribute("datadocs", docserviceSite + docservicePreloader);
-        model.addAttribute("username", userFullName);
+        model.addAttribute("username", newUser.getName());
         model.addAttribute("directUrl", directUrl);
         model.addAttribute("serverVersion", serverVersion);
 

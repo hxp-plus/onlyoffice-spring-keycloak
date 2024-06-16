@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 public class GroupServices {
@@ -44,7 +45,7 @@ public class GroupServices {
         }
         Group newGroup = new Group();
         newGroup.setName(name); // otherwise, create a new group with the specified name
-
+        newGroup.setId(UUID.randomUUID().toString());
         groupRepository.save(newGroup); // save a new group
 
         return newGroup;

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onlyoffice.integration.documentserver.managers.jwt.JwtManager;
 import com.onlyoffice.integration.documentserver.models.enums.Action;
+import com.onlyoffice.integration.documentserver.serializers.FilterState;
 import com.onlyoffice.integration.documentserver.storage.FileStoragePathBuilder;
 import com.onlyoffice.integration.entities.User;
 import com.onlyoffice.integration.dto.Mentions;
@@ -90,7 +91,7 @@ public class EditorController {
             @RequestParam(value = "actionLink", required = false) final String actionLink,
             @RequestParam(value = "directUrl", required = false, defaultValue = "false") final Boolean directUrl,
             final Model model) throws JsonProcessingException {
-        final String uid = "1";
+        final String uid = ANONYMOUS_USER_ID;
         final String lang = "zh";
         Action action = Action.edit;
         Type type = Type.desktop;
@@ -112,7 +113,7 @@ public class EditorController {
             }
         }
 
-        Optional<User> optionalUser = userService.findUserById(Integer.parseInt(uid));
+        Optional<User> optionalUser = userService.findUserById(uid);
 
         // if the user is not present, return the ONLYOFFICE start page
         if (!optionalUser.isPresent()) {
@@ -124,14 +125,21 @@ public class EditorController {
 
         // 获取Keycloak的登录信息
         String userFullName = "匿名用户";
-        String userSub = "00000000-0000-0000-0000-000000000000";
+        String userSub = ANONYMOUS_USER_ID;
+        String userEmail = "anonymous@example.com";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof DefaultOidcUser) {
             DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
             userFullName = userDetails.getFullName();
             userSub = userDetails.getSubject();
+            userEmail = userDetails.getEmail();
         }
-        user.setName(userFullName);
+        // 如果用户不存在，则创建
+        User newUser = userService.createUser(userSub, userFullName, userEmail,
+                List.of(FilterState.NULL.toString()),
+                "", List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+                List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
+                List.of(FilterState.NULL.toString()), null, true, true, false);
 
         // get file model with the default file parameters
         FileModel fileModel = fileConfigurer.getFileModel(
@@ -141,7 +149,7 @@ public class EditorController {
                         .type(type)
                         .lang(locale.toLanguageTag())
                         .action(action)
-                        .user(user)
+                        .user(newUser)
                         .actionData(actionLink)
                         .isEnableDirectUrl(directUrl)
                         .build());
@@ -178,7 +186,7 @@ public class EditorController {
         if (uid != null && !uid.equals("4")) {
             List<User> list = userService.findAll();
             for (User u : list) {
-                if (u.getId() != Integer.parseInt(uid) && u.getId() != ANONYMOUS_USER_ID) {
+                if (u.getId() != uid && u.getId() != ANONYMOUS_USER_ID) {
 
                     // user data includes user names and emails
                     usersForMentions.add(new Mentions(u.getName(), u.getEmail()));
@@ -207,7 +215,7 @@ public class EditorController {
         if (uid != null && !uid.equals("4")) {
             List<User> list = userService.findAll();
             for (User u : list) {
-                if (u.getId() != Integer.parseInt(uid) && u.getId() != ANONYMOUS_USER_ID) {
+                if (u.getId() != uid && u.getId() != ANONYMOUS_USER_ID) {
 
                     // user data includes user names, IDs and emails
                     usersForProtect.add(new Protect(u.getId(), u.getName(), u.getEmail()));

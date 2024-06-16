@@ -1,19 +1,17 @@
 /**
- *
  * (c) Copyright Ascensio System SIA 2024
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.onlyoffice.integration.controllers;
@@ -22,26 +20,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.onlyoffice.integration.documentserver.callbacks.CallbackHandler;
+import com.onlyoffice.integration.documentserver.managers.callback.CallbackManager;
+import com.onlyoffice.integration.documentserver.managers.document.DocumentManager;
 import com.onlyoffice.integration.documentserver.managers.history.HistoryManager;
 import com.onlyoffice.integration.documentserver.managers.jwt.JwtManager;
+import com.onlyoffice.integration.documentserver.models.enums.DocumentType;
 import com.onlyoffice.integration.documentserver.storage.FileStorageMutator;
 import com.onlyoffice.integration.documentserver.storage.FileStoragePathBuilder;
-import com.onlyoffice.integration.dto.Converter;
-import com.onlyoffice.integration.dto.ConvertedData;
-import com.onlyoffice.integration.dto.Reference;
-import com.onlyoffice.integration.dto.ReferenceData;
-import com.onlyoffice.integration.dto.Rename;
-import com.onlyoffice.integration.dto.Restore;
-import com.onlyoffice.integration.dto.SaveAs;
-import com.onlyoffice.integration.dto.Track;
-import com.onlyoffice.integration.entities.User;
-import com.onlyoffice.integration.documentserver.models.enums.DocumentType;
-import com.onlyoffice.integration.services.UserServices;
 import com.onlyoffice.integration.documentserver.util.file.FileUtility;
 import com.onlyoffice.integration.documentserver.util.service.ServiceConverter;
-import com.onlyoffice.integration.documentserver.managers.document.DocumentManager;
-import com.onlyoffice.integration.documentserver.managers.callback.CallbackManager;
-
+import com.onlyoffice.integration.dto.*;
+import com.onlyoffice.integration.entities.User;
+import com.onlyoffice.integration.services.UserServices;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -52,26 +42,18 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -81,11 +63,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import static com.onlyoffice.integration.documentserver.util.Constants.ANONYMOUS_USER_ID;
 
 @CrossOrigin("*")
 @Controller
@@ -127,14 +107,19 @@ public class FileController {
     private HistoryManager historyManager;
 
     // create user metadata
-    private String createUserMetadata(final String uid, final String fullFileName) {
-        Optional<User> optionalUser = userService.findUserById(Integer.parseInt(uid)); // find a user by their ID
-        String documentType = fileUtility.getDocumentType(fullFileName).toString().toLowerCase(); // get document type
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            storageMutator.createMeta(fullFileName, // create meta information with the user ID and name specified
-                    String.valueOf(user.getId()), user.getName());
+    private String createUserMetadata(final String fullFileName) {
+        // 获取Keycloak的登录信息
+        String userFullName = "匿名用户";
+        String userSub = ANONYMOUS_USER_ID;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof DefaultOidcUser) {
+            DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
+            userFullName = userDetails.getFullName();
+            userSub = userDetails.getSubject();
         }
+        String documentType = fileUtility.getDocumentType(fullFileName).toString().toLowerCase(); // get document type
+        storageMutator.createMeta(fullFileName, // create meta information with the user ID and name specified
+                String.valueOf(userSub), userFullName);
         return "{ \"filename\": \"" + fullFileName + "\", \"documentType\": \"" + documentType + "\" }";
     }
 
@@ -144,30 +129,19 @@ public class FileController {
         String contentType = "application/octet-stream";
 
         // create a response with the content type, header and body with the file data
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
     }
 
     private ResponseEntity<Resource> downloadSample(final String fileName) {
         String serverPath = System.getProperty("user.dir");
         String contentType = "application/octet-stream";
-        String[] fileLocation = new String[] {
-                serverPath, "src", "main", "resources", "assets", "document-templates",
-                "sample", fileName
-        };
+        String[] fileLocation = new String[]{serverPath, "src", "main", "resources", "assets", "document-templates", "sample", fileName};
         Path filePath = Paths.get(String.join(File.separator, fileLocation));
         Resource resource;
         try {
             resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
-                        .header(HttpHeaders.CONTENT_DISPOSITION,
-                                "attachment; filename=\"" + resource.getFilename() + "\"")
-                        .body(resource);
+                return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -176,26 +150,19 @@ public class FileController {
     }
 
     // download data from the specified history file
-    private ResponseEntity<Resource> downloadFileHistory(final String fileName,
-            final String version,
-            final String file) {
+    private ResponseEntity<Resource> downloadFileHistory(final String fileName, final String version, final String file) {
 
         // load the specified file as a resource
         Resource resource = storageMutator.loadFileAsResourceHistory(fileName, version, file);
         String contentType = "application/octet-stream";
 
         // create a response with the content type, header and body with the file data
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
     }
 
     @PostMapping("/upload")
     @ResponseBody
-    public String upload(@RequestParam("file") final MultipartFile file, // upload a file
-            @CookieValue("uid") final String uid) {
+    public String upload(@RequestParam("file") final MultipartFile file) {
         try {
             String fullFileName = file.getOriginalFilename(); // get file name
             String fileExtension = fileUtility.getFileExtension(fullFileName); // get file extension
@@ -219,10 +186,9 @@ public class FileController {
                 throw new IOException("Could not update a file"); // if the file cannot be updated, an error occurs
             }
 
-            fullFileName = fileUtility.getFileNameWithoutExtension(fileNamePath)
-                    + "." + fileExtension; // get full file name
+            fullFileName = fileUtility.getFileNameWithoutExtension(fileNamePath) + "." + fileExtension; // get full file name
 
-            return createUserMetadata(uid, fullFileName); // create user metadata and return it
+            return createUserMetadata(fullFileName); // create user metadata and return it
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,7 +200,7 @@ public class FileController {
     @PostMapping(path = "${url.converter}")
     @ResponseBody
     public String convert(@RequestBody final Converter body, // convert a file
-            @CookieValue("uid") final String uid, @CookieValue("ulang") final String lang) {
+                          @CookieValue("ulang") final String lang) {
         // get file name
         String fileName = body.getFileName();
 
@@ -293,7 +259,7 @@ public class FileController {
 
             // create meta information about the converted file with the user ID and name
             // specified
-            return createUserMetadata(uid, fileName);
+            return createUserMetadata(fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -323,17 +289,14 @@ public class FileController {
 
     @GetMapping("/downloadhistory")
     public ResponseEntity<Resource> downloadHistory(final HttpServletRequest request, // download a file
-            @RequestParam("fileName") final String fileName,
-            @RequestParam("ver") final String version,
-            @RequestParam("file") final String file) { // history file
+                                                    @RequestParam("fileName") final String fileName, @RequestParam("ver") final String version, @RequestParam("file") final String file) { // history file
         try {
             // check if a token is enabled or not
             if (jwtManager.tokenEnabled() && jwtManager.tokenUseForRequest()) {
                 String header = request.getHeader(documentJwtHeader == null // get the document JWT header
                         || documentJwtHeader.isEmpty() ? "Authorization" : documentJwtHeader);
                 if (header != null && !header.isEmpty()) {
-                    String token = header
-                            .replace("Bearer ", ""); // token is the header without the Bearer prefix
+                    String token = header.replace("Bearer ", ""); // token is the header without the Bearer prefix
                     jwtManager.readToken(token); // read the token
                 } else {
                     return null;
@@ -347,16 +310,14 @@ public class FileController {
 
     @GetMapping(path = "${url.download}")
     public ResponseEntity<Resource> download(final HttpServletRequest request, // download a file
-            @RequestParam("fileName") final String fileName,
-            @RequestParam(value = "userAddress", required = false) final String userAddress) {
+                                             @RequestParam("fileName") final String fileName, @RequestParam(value = "userAddress", required = false) final String userAddress) {
         try {
             // check if a token is enabled or not
             if (jwtManager.tokenEnabled() && userAddress != null && jwtManager.tokenUseForRequest()) {
                 String header = request.getHeader(documentJwtHeader == null // get the document JWT header
                         || documentJwtHeader.isEmpty() ? "Authorization" : documentJwtHeader);
                 if (header != null && !header.isEmpty()) {
-                    String token = header
-                            .replace("Bearer ", ""); // token is the header without the Bearer prefix
+                    String token = header.replace("Bearer ", ""); // token is the header without the Bearer prefix
                     jwtManager.readToken(token); // read the token
                 } else {
                     return null;
@@ -370,28 +331,29 @@ public class FileController {
 
     @GetMapping("/create")
     public String create(@RequestParam("fileExt") final String fileExt, // create a sample file of the specified
-                                                                        // extension
-            @RequestParam(value = "sample", required = false) final Optional<Boolean> isSample,
-            @CookieValue(value = "uid", required = false) final String uid,
-            final Model model) {
+                         // extension
+                         @RequestParam(value = "sample", required = false) final Optional<Boolean> isSample, final Model model) {
         // specify if the sample data exists or not
         Boolean sampleData = (isSample.isPresent() && !isSample.isEmpty()) && isSample.get();
         if (fileExt != null) {
             try {
-                Optional<User> user = userService.findUserById(Integer.parseInt(uid)); // find a user by their ID
+                // 获取Keycloak的登录信息
+                String userSub = ANONYMOUS_USER_ID;
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if (authentication.getPrincipal() instanceof DefaultOidcUser) {
+                    DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
+                    userSub = userDetails.getSubject();
+                }
+                Optional<User> user = userService.findUserById(userSub); // find a user by their ID
                 if (!user.isPresent()) {
                     // if the user with the specified ID doesn't exist, an error occurs
-                    throw new RuntimeException("Could not fine any user with id = " + uid);
+                    throw new RuntimeException("Could not fine any user with id = " + userSub);
                 }
-                String fileName = documentManager.createDemo(fileExt,
-                        sampleData,
-                        uid,
-                        user.get().getName()); // create a demo document with the sample data
+                String fileName = documentManager.createDemo(fileExt, sampleData, userSub, user.get().getName()); // create a demo document with the sample data
                 if (fileName.isBlank() || fileName == null) {
                     throw new RuntimeException("You must have forgotten to add asset files");
                 }
-                return "redirect:editor?fileName=" + URLEncoder
-                        .encode(fileName, StandardCharsets.UTF_8); // redirect the request
+                return "redirect:editor?fileName=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8); // redirect the request
             } catch (Exception ex) {
                 model.addAttribute("error", ex.getMessage());
                 return "error.html";
@@ -402,7 +364,7 @@ public class FileController {
 
     @GetMapping("/assets")
     public ResponseEntity<Resource> assets(@RequestParam("name") final String name) { // get sample files from the
-                                                                                      // assests
+        // assests
         return downloadSample(name);
     }
 
@@ -414,21 +376,18 @@ public class FileController {
     @GetMapping("/files")
     @ResponseBody
     public ArrayList<Map<String, Object>> files(@RequestParam(value = "fileId", required = false) final String fileId) { // get
-                                                                                                                         // files
-                                                                                                                         // information
+        // files
+        // information
         return fileId == null ? documentManager.getFilesInfo() : documentManager.getFilesInfo(fileId);
     }
 
     @PostMapping(path = "${url.track}")
     @ResponseBody
     public String track(final HttpServletRequest request, // track file changes
-            @RequestParam("fileName") final String fileName,
-            @RequestParam("userAddress") final String userAddress,
-            @RequestBody final Track body) {
+                        @RequestParam("fileName") final String fileName, @RequestParam("userAddress") final String userAddress, @RequestBody final Track body) {
         Track track;
         try {
-            String bodyString = objectMapper
-                    .writeValueAsString(body); // write the request body to the object mapper as a string
+            String bodyString = objectMapper.writeValueAsString(body); // write the request body to the object mapper as a string
             String header = request.getHeader(documentJwtHeader == null // get the request header
                     || documentJwtHeader.isEmpty() ? "Authorization" : documentJwtHeader);
 
@@ -450,7 +409,7 @@ public class FileController {
 
     @PostMapping("/saveas")
     @ResponseBody
-    public String saveAs(@RequestBody final SaveAs body, @CookieValue("uid") final String uid) {
+    public String saveAs(@RequestBody final SaveAs body) {
         try {
             String fileName = documentManager.getCorrectName(body.getTitle());
             String curExt = fileUtility.getFileExtension(fileName);
@@ -467,7 +426,7 @@ public class FileController {
                 return "{\"error\":\"File size is incorrect\"}";
             }
             storageMutator.createFile(Path.of(storagePathBuilder.getFileLocation(fileName)), stream);
-            createUserMetadata(uid, fileName);
+            createUserMetadata(fileName);
 
             return "{\"file\":  \"" + fileName + "\"}";
         } catch (IOException e) {
@@ -534,7 +493,7 @@ public class FileController {
 
             if (fileName.equals("")) {
                 try {
-                    String path = (String) body.getPath();
+                    String path = body.getPath();
                     path = fileUtility.getFileName(path);
                     File f = new File(storagePathBuilder.getFileLocation(path));
                     if (f.exists()) {
@@ -559,10 +518,7 @@ public class FileController {
 
             HashMap<String, Object> data = new HashMap<>();
             data.put("fileType", fileUtility.getFileExtension(fileName));
-            data.put("key", serviceConverter.generateRevisionId(
-                    storagePathBuilder.getStorageLocation()
-                            + "/" + fileName + "/"
-                            + new File(storagePathBuilder.getFileLocation(fileName)).lastModified()));
+            data.put("key", serviceConverter.generateRevisionId(storagePathBuilder.getStorageLocation() + "/" + fileName + "/" + new File(storagePathBuilder.getFileLocation(fileName)).lastModified()));
             data.put("url", documentManager.getDownloadUrl(fileName, true));
             data.put("directUrl", body.getDirectUrl() ? documentManager.getDownloadUrl(fileName, false) : null);
             data.put("referenceData", referenceData);
@@ -588,16 +544,21 @@ public class FileController {
 
     @GetMapping("/historydata")
     @ResponseBody
-    public String history(@RequestParam("fileName") final String fileName,
-            @RequestParam("version") final String version,
-            @RequestParam(value = "directUrl", defaultValue = "false") final Boolean directUrl) {
+    public String history(@RequestParam("fileName") final String fileName, @RequestParam("version") final String version, @RequestParam(value = "directUrl", defaultValue = "false") final Boolean directUrl) {
         return historyManager.getHistoryData(fileName, version, directUrl);
     }
 
     @PutMapping("/restore")
     @ResponseBody
-    public String restore(@RequestBody final Restore body, @CookieValue("uid") final Integer uid) {
+    public String restore(@RequestBody final Restore body) {
         try {
+            // 获取Keycloak的登录信息
+            String userSub = ANONYMOUS_USER_ID;
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.getPrincipal() instanceof DefaultOidcUser) {
+                DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
+                userSub = userDetails.getSubject();
+            }
             String sourceStringFile = storagePathBuilder.getFileLocation(body.getFileName());
             File sourceFile = new File(sourceStringFile);
             Path sourcePathFile = sourceFile.toPath();
@@ -613,17 +574,12 @@ public class FileController {
             Path bumpedKeyPathFile = Paths.get(bumpedVersionStringDirectory, "key.txt");
             String bumpedKeyStringFile = bumpedKeyPathFile.toString();
             File bumpedKeyFile = new File(bumpedKeyStringFile);
-            String bumpedKey = serviceConverter.generateRevisionId(
-                    storagePathBuilder.getStorageLocation()
-                            + "/"
-                            + body.getFileName()
-                            + "/"
-                            + Long.toString(sourceFile.lastModified()));
+            String bumpedKey = serviceConverter.generateRevisionId(storagePathBuilder.getStorageLocation() + "/" + body.getFileName() + "/" + sourceFile.lastModified());
             FileWriter bumpedKeyFileWriter = new FileWriter(bumpedKeyFile);
             bumpedKeyFileWriter.write(bumpedKey);
             bumpedKeyFileWriter.close();
 
-            User user = userService.findUserById(uid).get();
+            User user = userService.findUserById(userSub).get();
 
             Path bumpedChangesPathFile = Paths.get(bumpedVersionStringDirectory, "changes.json");
             String bumpedChangesStringFile = bumpedChangesPathFile.toString();
@@ -652,10 +608,7 @@ public class FileController {
             Path bumpedFile = Paths.get(bumpedVersionStringDirectory, previousBasename);
             Files.move(sourcePathFile, bumpedFile);
 
-            String recoveryVersionStringDirectory = documentManager.versionDir(
-                    historyDirectory,
-                    body.getVersion(),
-                    true);
+            String recoveryVersionStringDirectory = documentManager.versionDir(historyDirectory, body.getVersion(), true);
             Path recoveryPathFile = Paths.get(recoveryVersionStringDirectory, previousBasename);
             String recoveryStringFile = recoveryPathFile.toString();
             FileInputStream recoveryStream = new FileInputStream(recoveryStringFile);
