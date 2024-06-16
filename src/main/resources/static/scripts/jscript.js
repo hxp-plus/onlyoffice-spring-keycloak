@@ -315,8 +315,9 @@ if (typeof jQuery !== "undefined") {
   });
 
   jq(document).on("click", ".delete-file", function () {
-    var fileName = encodeURIComponent(jq(this).attr("data-filename"));
-    var msg = "您真的确定要删除" + fileName + "吗？\n\n请确认！";
+    var fileNameOriginal = jq(this).attr("data-filename");
+    var fileNameEncoded = encodeURIComponent(fileNameOriginal);
+    var msg = "您真的确定要删除 " + fileNameOriginal + " 吗？\n\n请确认！";
     if (confirm(msg)) {
       var requestAddress = "/delete";
       jq.ajax({
@@ -324,7 +325,7 @@ if (typeof jQuery !== "undefined") {
         contentType: "application/json",
         type: "post",
         dataType: "json",
-        data: JSON.stringify({ filename: fileName, filePass: null }),
+        data: JSON.stringify({ filename: fileNameEncoded, filePass: null }),
         url: requestAddress,
         complete: function (data) {
           document.location.reload();
