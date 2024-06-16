@@ -122,6 +122,17 @@ public class EditorController {
         User user = optionalUser.get();
         user.setImage(null);
 
+        // 获取Keycloak的登录信息
+        String userFullName = "匿名用户";
+        String userSub = "00000000-0000-0000-0000-000000000000";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof DefaultOidcUser) {
+            DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
+            userFullName = userDetails.getFullName();
+            userSub = userDetails.getSubject();
+        }
+        user.setName(userFullName);
+
         // get file model with the default file parameters
         FileModel fileModel = fileConfigurer.getFileModel(
                 DefaultFileWrapper
@@ -134,14 +145,6 @@ public class EditorController {
                         .actionData(actionLink)
                         .isEnableDirectUrl(directUrl)
                         .build());
-
-        String userFullName = "匿名用户";
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getPrincipal().getClass());
-        if (authentication.getPrincipal() instanceof DefaultOidcUser) {
-            DefaultOidcUser userDetails = (DefaultOidcUser) authentication.getPrincipal();
-            userFullName = userDetails.getFullName();
-        }
 
         // add attributes to the specified model
         // add file model with the default parameters to the original model
@@ -166,8 +169,6 @@ public class EditorController {
 
         // get user data for protect and add it to the model
         model.addAttribute("usersForProtect", getUserProtect(uid));
-
-        model.addAttribute("userFullName", userFullName);
 
         return "editor.html";
     }
