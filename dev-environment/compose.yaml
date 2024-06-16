@@ -76,13 +76,11 @@ services:
     expose:
       - '5672'
     image: docker.io/library/rabbitmq:3.13.3-alpine
-    restart: always
   onlyoffice-redis:
     container_name: onlyoffice-redis
     expose:
       - '6379'
     image: docker.io/library/redis:7.4-rc1-alpine3.20
-    restart: always
 volumes:
   keycloak-mysql:
     name: keycloak-mysql
