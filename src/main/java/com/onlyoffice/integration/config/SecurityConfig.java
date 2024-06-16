@@ -31,7 +31,8 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/track", "/download").permitAll()
+                // 这三个接口使用JWT进行鉴权，不使用Keycloak，为onlyoffice调用的接口
+                .antMatchers("/track", "/download", "/downloadhistory").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
