@@ -1,0 +1,77 @@
+filename-max: '50'
+files:
+  docservice:
+    header: Authorization
+    history:
+      postfix: -hist
+    languages: zh:Chinese (Simplified)
+    # OnlyOffice 文档服务器的 secret
+    secret: 45JW21YqkaXS9xJSUHC4WcVo0FJohjkW
+    timeout: '120000'
+    token-use-for-request: 'true'
+    url:
+      api: web-apps/apps/api/documents/api.js
+      command: coauthoring/CommandService.ashx
+      converter: ConvertService.ashx
+      example: ''
+      preloader: web-apps/apps/api/documents/cache-scripts.html
+      # OnlyOffice 文档服务器访问地址
+      site: http://gentoo.hxp.lan:8081/
+    verify-peer-off: 'true'
+  storage:
+    folder: documents
+    nodeValue: ''
+filesize-max: '52428800'
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+server:
+  address: 0.0.0.0
+  # 服务器端口
+  port: '8010'
+  version: '11'
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    password: password
+    url: jdbc:h2:mem:usersdb
+    username: sa
+  h2:
+    console:
+      enabled: 'true'
+      path: /h2
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: 'true'
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            # Keycloak 单点认证服务器的 Realm 地址
+            issuer-uri: http://gentoo.hxp.lan:8080/realms/test
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            authorization-grant-type: authorization_code
+            # Keycloak 单点认证服务器的 client id
+            client-id: test-client
+            scope: openid
+      resourceserver:
+        jwt:
+          # Keycloak 单点认证服务器的 Realm 地址
+          issuer-uri: http://gentoo.hxp.lan:8080/realms/test
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+url:
+  converter: /converter
+  download: /download
+  editor: /editor
+  index: /
+  track: /track
