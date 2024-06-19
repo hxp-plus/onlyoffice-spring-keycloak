@@ -112,6 +112,11 @@ docker exec onlyoffice-postgresql /bin/sh -c 'PG_PASSWORD=onlyoffice psql -h 127
 Spring 项目配置文件需要客户化以下几行：
 
 ```
+##############################################################################
+# 以下参数需要客户化
+##############################################################################
+# 服务器端口
+server.port=8010
 # OnlyOffice 文档服务器访问地址
 files.docservice.url.site=http://gentoo.hxp.lan:8081/
 # OnlyOffice 文档服务器的 secret
@@ -156,7 +161,14 @@ cd /onlyoffice
 java -jar /onlyoffice/onlyoffice-server-v20240611.jar --spring.config.location=file:///onlyoffice/config/application.properties
 ```
 
+建议为此命令配置自动启动脚本，启停脚本实现如果进程没有启动则启动，然后用crontab定时调用启动脚本实现自动重启。
+
 ## 更新记录
+
+### v20240618 内测版
+- 安全性更新：文档服务器与后端服务器开启JWT，解决 Spring 后端供文档服务器调用的接口可被非文档服务器非法访问的问题。
+- BUG修复：修复了用户在主页点击删除文档按钮，弹出的二次确认窗口中，中文显示乱码的问题。
+- 功能性更新：文档历史修改记录功能上线，现在可在文档编辑器中点击“协作”->“版本历史”，查看文档修改记录，并对文档进行回退操作。
 
 ### v20240611 内测版
 

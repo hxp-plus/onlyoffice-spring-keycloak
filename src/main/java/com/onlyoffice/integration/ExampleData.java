@@ -123,7 +123,7 @@ public class ExampleData {
                 // List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                 // List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                 // new ArrayList<>(), null, false, false, false);
-                userService.createUser(ANONYMOUS_USER_ID,"Anonymous", "anonymous@example.com", descriptionUserFirst,
+                userService.createUser(ANONYMOUS_USER_ID, "Anonymous", "anonymous@example.com", descriptionUserFirst,
                                 "", List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                                 List.of(FilterState.NULL.toString()), List.of(FilterState.NULL.toString()),
                                 List.of(FilterState.NULL.toString()), null, true, true, false);

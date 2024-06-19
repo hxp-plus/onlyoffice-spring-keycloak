@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.onlyoffice</groupId>
 	<artifactId>onlyoffice-server</artifactId>
-	<version>v20240611</version>
+	<version>20240618</version>
 	<name>Java Spring Integration Example</name>
 	<description>ONLYOFFICE Java Spring Integration</description>
 	<properties>
