@@ -50,7 +50,7 @@ OnlyOffice 文档服务器用于给本项目提供在线文档编辑服务，其
 tr -dc A-Za-z0-9 </dev/urandom | head -c 32; echo
 ```
 
-找到 `dev-environment/onlyoffice-docs/production-linux.json` 的如下几行的进行替换：
+找到 `dev/onlyoffice-docs/production-linux.json` 的如下几行的进行替换：
 
 ```
 "secret": {
@@ -82,7 +82,7 @@ services:
 使用 docker 搭建 Spring 后端运行需要的两个服务：
 
 ```
-cd dev-environment
+cd dev
 docker compose up
 ```
 
