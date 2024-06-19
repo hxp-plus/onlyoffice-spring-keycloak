@@ -120,6 +120,8 @@ files:
     url:
       # OnlyOffice 文档服务器访问地址
       site: http://gentoo.hxp.lan:8081/
+  # 文档存储路径
+  storage: './documents/'
 server:
   # 服务器端口
   port: '8010'

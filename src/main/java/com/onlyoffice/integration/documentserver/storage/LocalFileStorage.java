@@ -61,9 +61,6 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
     @Getter
     private String storageAddress;
 
-    @Value("${files.storage.folder}")
-    private String storageFolder;
-
     @Value("${files.docservice.url.example}")
     private String docserviceUrlExample;
 
@@ -101,7 +98,6 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
             directory = this.storageAddress + File.separator;
         } else {
             directory = serverPath
-                    + File.separator + storageFolder
                     + File.separator + this.storageAddress
                     + File.separator;
         }

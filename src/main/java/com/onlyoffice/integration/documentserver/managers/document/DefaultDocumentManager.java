@@ -49,8 +49,6 @@ import static com.onlyoffice.integration.documentserver.util.Constants.KILOBYTE_
 @Primary
 public class DefaultDocumentManager implements DocumentManager {
 
-    @Value("${files.storage.folder}")
-    private String storageFolder;
     @Value("${files.storage}")
     private String filesStorage;
     @Value("${url.track}")

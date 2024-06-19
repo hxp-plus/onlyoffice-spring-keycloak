@@ -18,15 +18,14 @@ files:
       # OnlyOffice 文档服务器访问地址
       site: http://gentoo.hxp.lan:8081/
     verify-peer-off: 'true'
-  storage:
-    folder: documents
-    nodeValue: ''
+  # 文档存储路径
+  storage: './documents/'
 filesize-max: '52428800'
 logging:
   level:
     org:
       springframework:
-        security: DEBUG
+        security: INFO
 server:
   address: 0.0.0.0
   # 服务器端口
