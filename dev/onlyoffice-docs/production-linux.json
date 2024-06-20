@@ -32,6 +32,10 @@
   },
   "services": {
     "CoAuthoring": {
+      "autoAssembly": {
+        "enable": true,
+        "interval": "1m"
+      },
       "redis": {
         "host": "onlyoffice-redis",
         "iooptions": {},
