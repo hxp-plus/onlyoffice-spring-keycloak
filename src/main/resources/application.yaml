@@ -30,6 +30,9 @@ server:
   address: 0.0.0.0
   # 服务器端口
   port: '8010'
+  servlet:
+    session:
+      tracking-modes: cookie
   version: '11'
 spring:
   datasource:
@@ -45,7 +48,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    show-sql: 'true'
+    show-sql: 'false'
   security:
     oauth2:
       client:
