@@ -29,7 +29,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -72,6 +73,8 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
 
     @Autowired
     private HttpServletRequest request;
+
+    private final Logger logger = LoggerFactory.getLogger(LocalFileStorage.class);
 
     /*
      * This Storage configuration method should be called whenever a new storage
@@ -118,6 +121,7 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
 
     // create a new directory if it does not exist
     public void createDirectory(final Path path) {
+        logger.info("createDirectory: {}", path);
         if (Files.exists(path)) {
             return;
         }
@@ -130,6 +134,7 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
 
     // create a new file if it does not exist
     public boolean createFile(final Path path, final InputStream stream) {
+        logger.info("createFile: {}", path);
         if (Files.exists(path)) {
             return true;
         }
@@ -152,6 +157,7 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
 
     // delete a file
     public boolean deleteFile(final String fileNameParam) {
+        logger.info("deleteFile: {}", fileNameParam);
         String fileName = URLDecoder
                 .decode(fileNameParam, StandardCharsets.UTF_8); // decode a x-www-form-urlencoded string
         if (fileName.isBlank()) {
@@ -177,12 +183,12 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
          * recursively delete any nested directories or files as well
          */
         boolean fileWithoutExtDeleted = FileSystemUtils.deleteRecursively(filePathWithoutExt.toFile());
-
         return fileDeleted && fileWithoutExtDeleted;
     }
 
     // delete file history
     public boolean deleteFileHistory(final String fileNameParam) {
+        logger.info("deleteFileHistory: {}", fileNameParam);
         String fileName = URLDecoder
                 .decode(fileNameParam, StandardCharsets.UTF_8); // decode a x-www-form-urlencoded string
         if (fileName.isBlank()) {
@@ -205,12 +211,12 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
          * recursively delete any nested directories or files as well
          */
         boolean historyWithoutExtDeleted = FileSystemUtils.deleteRecursively(fileHistoryPathWithoutExt.toFile());
-
         return historyDeleted || historyWithoutExtDeleted;
     }
 
     // update a file
     public String updateFile(final String fileName, final byte[] bytes) {
+        logger.info("updateFile: {}", fileName);
         Path path = fileUtility
                 .generateFilepath(getStorageLocation(), fileName); // generate the path to the specified file
         try {
@@ -224,6 +230,7 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
 
     // move a file to the specified destination
     public boolean moveFile(final Path source, final Path destination) {
+        logger.info("moveFile: {} -> {}", source, destination);
         try {
             Files.move(source, destination,
                     new StandardCopyOption[] {
@@ -238,6 +245,7 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
 
     // write the payload to the file
     public boolean writeToFile(final String pathName, final String payload) {
+        logger.info("writeToFile: {}", pathName);
         try (FileWriter fw = new FileWriter(pathName)) {
             fw.write(payload);
             return true;
@@ -344,6 +352,7 @@ public class LocalFileStorage implements FileStorageMutator, FileStoragePathBuil
 
     // create or update a file
     public boolean createOrUpdateFile(final Path path, final ByteArrayInputStream stream) {
+        logger.info("createOrUpdateFile: {}", path);
         if (!Files.exists(path)) { // if the specified file does not exist
             return createFile(path, stream); // create it in the specified directory
         } else {
