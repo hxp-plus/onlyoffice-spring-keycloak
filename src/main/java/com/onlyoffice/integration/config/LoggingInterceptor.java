@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 public class LoggingInterceptor extends HandlerInterceptorAdapter {
     private final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
         String method = request.getMethod();
         String path = request.getRequestURI();
         String queryString = request.getQueryString();
         String remoteAddr = request.getRemoteAddr();
-        logger.info("Received request from {} : {} {}{}", remoteAddr,method, path, (queryString != null ? "?" + queryString : ""));
+        logger.info("Received request from {} : {} {}{}", remoteAddr, method, path, (queryString != null ? "?" + queryString : ""));
         return true;
     }
 }
