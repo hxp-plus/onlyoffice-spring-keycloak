@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.onlyoffice</groupId>
 	<artifactId>onlyoffice-server</artifactId>
-	<version>20240618</version>
+	<version>20240622</version>
 	<name>Java Spring Integration Example</name>
 	<description>ONLYOFFICE Java Spring Integration</description>
 
